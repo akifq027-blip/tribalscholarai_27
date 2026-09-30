@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Directory – TribalScholar AI</title>
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/components.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
+  <script src="/js/theme.js"></script>
+</head>
+<body>
+  <div class="gov-top-bar">
+    <div class="gov-top-content">
+      <div class="gov-emblem-text">
+        <span>🏛️</span>
+        <span>GOVERNMENT OF INDIA | MINISTRY OF TRIBAL AFFAIRS</span>
+      </div>
+      <div class="gov-top-controls">
+        <div class="theme-selector-wrap">
+          <label for="portal-theme" style="font-size:11px;font-weight:600;">Theme:</label>
+          <select id="portal-theme" class="theme-preview-selector" aria-label="Select Portal Design Theme">
+            <option value="gov">Gov Standard</option>
+            <option value="tribal">Tribal Heritage</option>
+            <option value="contrast">High Contrast (A11y)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <header class="main-header">
+    <div class="nav-container">
+      <a href="/" class="brand-link">
+        <div class="brand-logo-badge">TS</div>
+        <div class="brand-info">
+          <h1>TribalScholar AI</h1>
+          <p>ST STUDENT ROSTER & VERIFICATION</p>
+        </div>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/admin/dashboard.html">Overview</a></li>
+          <li><a href="/admin/scholarships.html">Manage Schemes</a></li>
+          <li><a href="/admin/applications.html">Applications</a></li>
+          <li><a href="/admin/students.html" class="active">Students</a></li>
+          <li><a href="/admin/analytics.html">Analytics</a></li>
+          <li><a href="/admin/audit-logs.html">Audit Logs</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-auth-buttons" id="nav-auth-container"></div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div style="margin-bottom:24px;">
+      <h2 style="font-size:24px;color:var(--primary);">Scheduled Tribe Student Directory</h2>
+      <p style="font-size:14px;color:var(--text-muted);">
+        Enrolled applicants, academic profiles, domicile credentials, and user account status
+      </p>
+    </div>
+
+    <div class="card" style="margin-bottom:20px;padding:16px;">
+      <div style="display:flex;gap:12px;">
+        <input type="text" id="student-search" class="form-control" placeholder="Search by student name, email, district, college..." oninput="filterStudents()" />
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Student Name</th>
+              <th>Category & Domicile</th>
+              <th>Course & Institution</th>
+              <th>Family Income</th>
+              <th>Score (%)</th>
+              <th>Account Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="students-tbody">
+            <tr>
+              <td colspan="8" style="text-align:center;padding:24px;color:var(--text-muted);">
+                Loading student directory...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <footer class="main-footer">
+    <div class="footer-bottom">
+      &copy; 2026 Ministry of Tribal Affairs, Government of India. TribalScholar AI Console.
+    </div>
+  </footer>
+
+  <script type="module" src="/js/api.js"></script>
+  <script type="module" src="/js/auth.js"></script>
+  <script type="module">
+    import { apiRequest, showToast, formatINR } from '/js/api.js';
+    import { requireAuth } from '/js/auth.js';
+
+    let allStudents = [];
+
+    window.toggleUser = async function(id) {
+      try {
+        const res = await apiRequest(`/admin/students/${id}/status`, { method: 'PUT' });
+        showToast(res.message, 'info');
+        loadStudents();
+      } catch (e) {}
+    };
+
+    window.filterStudents = function() {
+      const q = document.getElementById('student-search').value.toLowerCase();
+      const filtered = allStudents.filter(s => {
+        return !q ||
+          s.full_name.toLowerCase().includes(q) ||
+          s.email.toLowerCase().includes(q) ||
+          (s.institution_name && s.institution_name.toLowerCase().includes(q)) ||
+          (s.district && s.district.toLowerCase().includes(q));
+      });
+      renderStudents(filtered);
+    };
+
+    function renderStudents(list) {
+      const tbody = document.getElementById('students-tbody');
+      if (list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text-muted);">No students found.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = list.map(s => `
+        <tr>
+          <td>#${s.id}</td>
+          <td>
+            <strong>${s.full_name}</strong>
+            <div style="font-size:12px;color:var(--text-muted);">${s.email}</div>
+          </td>
+          <td>
+            <div>${s.category || 'ST'}</div>
+            <small style="color:var(--text-muted);">${s.district ? s.district + ', ' : ''}${s.state || 'N/A'}</small>
+          </td>
+          <td>
+            <div>${s.course || 'Undergraduate'}</div>
+            <small style="color:var(--text-muted);">${s.institution_name || 'N/A'}</small>
+          </td>
+          <td>${s.annual_family_income ? formatINR(s.annual_family_income) : 'N/A'}</td>
+          <td><strong>${s.percentage ? s.percentage + '%' : (s.cgpa ? s.cgpa + ' CGPA' : 'N/A')}</strong></td>
+          <td>
+            <span class="badge ${s.is_active ? 'badge-approved' : 'badge-rejected'}">
+              ${s.is_active ? 'Active' : 'Inactive'}
+            </span>
+          </td>
+          <td>
+            <button class="btn btn-outline btn-sm" onclick="toggleUser(${s.id})" style="${s.is_active ? 'color:#dc2626;border-color:#fca5a5;' : 'color:#15803d;'}">
+              ${s.is_active ? 'Deactivate' : 'Activate'}
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function loadStudents() {
+      if (!requireAuth(['admin', 'super_admin'])) return;
+      try {
+        const data = await apiRequest('/admin/students');
+        allStudents = data.students || [];
+        renderStudents(allStudents);
+      } catch (err) {
+        document.getElementById('students-tbody').innerHTML = '<tr><td colspan="8" style="text-align:center;color:#dc2626;padding:20px;">Failed to load students.</td></tr>';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadStudents);
+  </script>
+</body>
+</html>

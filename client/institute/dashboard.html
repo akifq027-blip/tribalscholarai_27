@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Institute Verification Portal – TribalScholar AI</title>
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/components.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
+  <script src="/js/theme.js"></script>
+</head>
+<body>
+  <!-- Top Gov Bar -->
+  <div class="gov-top-bar">
+    <div class="gov-top-content">
+      <div class="gov-emblem-text">
+        <span>🏛️</span>
+        <span>GOVERNMENT OF INDIA | MINISTRY OF TRIBAL AFFAIRS</span>
+      </div>
+      <div class="gov-top-controls">
+        <div class="theme-selector-wrap">
+          <label for="portal-theme" style="font-size:11px;font-weight:600;">Theme:</label>
+          <select id="portal-theme" class="theme-preview-selector" aria-label="Select Portal Design Theme">
+            <option value="gov">Gov Standard</option>
+            <option value="tribal">Tribal Heritage</option>
+            <option value="contrast">High Contrast (A11y)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <header class="main-header">
+    <div class="nav-container">
+      <a href="/" class="brand-link">
+        <div class="brand-logo-badge">TS</div>
+        <div class="brand-info">
+          <h1>TribalScholar AI</h1>
+          <p>INSTITUTION NODAL VERIFICATION DESK</p>
+        </div>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/institute/dashboard.html" class="active">Assigned Applications</a></li>
+          <li><a href="/scholarships.html">Scheme Guidelines</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-auth-buttons" id="nav-auth-container"></div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:24px;">
+      <div>
+        <h2 style="font-size:24px;color:var(--primary);">Institutional Application Scrutiny Desk</h2>
+        <p style="font-size:14px;color:var(--text-muted);">
+          Scrutinize student admissions, course enrollment, academic transcripts, and forward to Welfare Directorate.
+        </p>
+      </div>
+      <span class="badge badge-verification" style="font-size:12px;padding:6px 12px;">Institute Officer Portal</span>
+    </div>
+
+    <!-- Quick Stats -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:16px;margin-bottom:28px;">
+      <div class="card" style="border-left:4px solid var(--primary);">
+        <div style="font-size:12px;color:var(--text-muted);font-weight:600;">Total Student Applications</div>
+        <div style="font-size:26px;font-weight:800;color:var(--primary);margin-top:4px;" id="stat-total">0</div>
+      </div>
+      <div class="card" style="border-left:4px solid var(--secondary);">
+        <div style="font-size:12px;color:var(--text-muted);font-weight:600;">Pending Verification</div>
+        <div style="font-size:26px;font-weight:800;color:var(--secondary);margin-top:4px;" id="stat-pending">0</div>
+      </div>
+      <div class="card" style="border-left:4px solid var(--accent-green);">
+        <div style="font-size:12px;color:var(--text-muted);font-weight:600;">Forwarded / Approved</div>
+        <div style="font-size:26px;font-weight:800;color:var(--accent-green);margin-top:4px;" id="stat-approved">0</div>
+      </div>
+    </div>
+
+    <!-- Applications Filter & Table -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Pending Student Applications</h3>
+        <div style="display:flex;gap:10px;">
+          <input type="text" id="inst-search" class="form-control" placeholder="Search student name, app ID..." style="font-size:13px;width:240px;" oninput="filterTable()" />
+          <select id="inst-status-filter" class="form-select" style="font-size:13px;width:180px;" onchange="filterTable()">
+            <option value="all">All Statuses</option>
+            <option value="SUBMITTED">Newly Submitted</option>
+            <option value="DOCUMENT_VERIFICATION">Document Verification</option>
+            <option value="INSTITUTE_VERIFICATION">Institute Verification</option>
+            <option value="UNDER_REVIEW">Forwarded to Dept</option>
+            <option value="APPROVED">Approved</option>
+            <option value="REJECTED">Rejected</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>App Number</th>
+              <th>Applicant Name</th>
+              <th>Course / Year</th>
+              <th>Scheme Title</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="institute-tbody">
+            <tr>
+              <td colspan="6" style="text-align:center;padding:24px;color:var(--text-muted);">
+                Loading assigned student applications...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- Institute Verification Action Modal -->
+  <div class="modal-overlay" id="verify-modal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">Verify Student Application</h3>
+        <button class="modal-close-btn" onclick="closeVerifyModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="background:var(--bg-muted);padding:14px;border-radius:var(--radius-sm);margin-bottom:16px;" id="modal-app-details">
+          <!-- Populated via JS -->
+        </div>
+
+        <form id="verify-action-form">
+          <input type="hidden" id="modal-app-id" />
+          <div class="form-group">
+            <label class="form-label" for="verify-action-select">Verification Action <span class="required">*</span></label>
+            <select id="verify-action-select" class="form-select" required onchange="toggleRejectionField()">
+              <option value="FORWARD">Verify & Forward to State Tribal Welfare Directorate</option>
+              <option value="APPROVE">Direct Institutional Approval</option>
+              <option value="REJECT">Reject Application (Specify Official Reason)</option>
+            </select>
+          </div>
+
+          <div class="form-group" id="rejection-reason-group" style="display:none;">
+            <label class="form-label" for="verify-rejection-reason">Rejection Reason <span class="required">*</span></label>
+            <select id="verify-rejection-reason" class="form-select">
+              <option value="Non-matching enrollment records or dropped out">Non-matching enrollment records or dropped out</option>
+              <option value="Academic percentage below scheme threshold">Academic percentage below scheme threshold</option>
+              <option value="ST certificate not authentic or illegible">ST certificate not authentic or illegible</option>
+              <option value="Income certificate exceeded ceiling">Income certificate exceeded ceiling</option>
+              <option value="Student already receives another central scholarship">Student already receives another central scholarship</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="verify-remarks">Officer Remarks / Verification Notes</label>
+            <textarea id="verify-remarks" class="form-control" rows="3" placeholder="Enter institutional verification notes, marksheet verification number, etc."></textarea>
+          </div>
+
+          <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;">
+            <button type="button" class="btn btn-outline" onclick="closeVerifyModal()">Cancel</button>
+            <button type="submit" id="verify-submit-btn" class="btn btn-primary">Submit Verification Decision</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <footer class="main-footer">
+    <div class="footer-bottom">
+      &copy; 2026 Ministry of Tribal Affairs, Government of India. TribalScholar AI Portal.
+    </div>
+  </footer>
+
+  <script type="module" src="/js/api.js"></script>
+  <script type="module" src="/js/auth.js"></script>
+  <script type="module" src="/js/chat.js"></script>
+  <script type="module">
+    import { apiRequest, showToast, formatDate } from '/js/api.js';
+    import { requireAuth } from '/js/auth.js';
+
+    let allApps = [];
+
+    window.closeVerifyModal = function() {
+      document.getElementById('verify-modal').classList.remove('open');
+    };
+
+    window.toggleRejectionField = function() {
+      const act = document.getElementById('verify-action-select').value;
+      document.getElementById('rejection-reason-group').style.display = act === 'REJECT' ? 'block' : 'none';
+    };
+
+    window.openVerifyModal = function(id) {
+      const app = allApps.find(a => a.id === id);
+      if (!app) return;
+
+      document.getElementById('modal-app-id').value = app.id;
+      document.getElementById('modal-app-details').innerHTML = `
+        <div style="font-size:13px;line-height:1.6;">
+          <div><strong>Application:</strong> ${app.application_number}</div>
+          <div><strong>Student Name:</strong> ${app.student_name} (${app.category || 'ST'})</div>
+          <div><strong>Course & Institution:</strong> ${app.course || 'N/A'}, ${app.institution_name || 'N/A'}</div>
+          <div><strong>Score / CGPA:</strong> ${app.percentage ? app.percentage + '%' : (app.cgpa ? app.cgpa + ' CGPA' : 'N/A')}</div>
+          <div><strong>Scheme Applied:</strong> ${app.scholarship_title || 'Scholarship Scheme'}</div>
+        </div>
+      `;
+
+      document.getElementById('verify-action-select').value = 'FORWARD';
+      toggleRejectionField();
+      document.getElementById('verify-remarks').value = `Verified enrollment of ${app.student_name} for the current academic session. Academic records matched.`;
+      document.getElementById('verify-modal').classList.add('open');
+    };
+
+    document.getElementById('verify-action-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const applicationId = document.getElementById('modal-app-id').value;
+      const action = document.getElementById('verify-action-select').value;
+      const remarks = document.getElementById('verify-remarks').value.trim();
+      const rejectionReason = document.getElementById('verify-rejection-reason').value;
+      const btn = document.getElementById('verify-submit-btn');
+
+      btn.disabled = true;
+      btn.innerText = 'Processing...';
+
+      try {
+        await apiRequest('/institute/verify', {
+          method: 'POST',
+          body: JSON.stringify({ applicationId, action, remarks, rejectionReason }),
+        });
+        showToast('Application verified and status updated!', 'success');
+        closeVerifyModal();
+        loadInstituteApplications();
+      } catch (err) {
+        btn.disabled = false;
+        btn.innerText = 'Submit Verification Decision';
+      }
+    });
+
+    window.filterTable = function() {
+      const q = document.getElementById('inst-search').value.toLowerCase();
+      const st = document.getElementById('inst-status-filter').value;
+      const filtered = allApps.filter(a => {
+        const matchesQ = !q || a.student_name.toLowerCase().includes(q) || a.application_number.toLowerCase().includes(q);
+        const matchesSt = st === 'all' || a.status === st;
+        return matchesQ && matchesSt;
+      });
+      renderTable(filtered);
+    };
+
+    function renderTable(apps) {
+      const tbody = document.getElementById('institute-tbody');
+      if (apps.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text-muted);">No matching applications found.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = apps.map(a => {
+        let badgeClass = 'badge-submitted';
+        if (['DOCUMENT_VERIFICATION', 'INSTITUTE_VERIFICATION'].includes(a.status)) badgeClass = 'badge-verification';
+        if (a.status === 'UNDER_REVIEW') badgeClass = 'badge-review';
+        if (a.status === 'APPROVED') badgeClass = 'badge-approved';
+        if (a.status === 'DISBURSED') badgeClass = 'badge-disbursed';
+        if (a.status === 'REJECTED') badgeClass = 'badge-rejected';
+
+        return `
+          <tr>
+            <td><strong>${a.application_number}</strong></td>
+            <td>
+              <div><strong>${a.student_name}</strong></div>
+              <small style="color:var(--text-muted);">${a.student_email}</small>
+            </td>
+            <td>
+              <div>${a.course || 'Degree Course'}</div>
+              <small style="color:var(--text-muted);">${a.institution_name || 'NIT Rourkela'}</small>
+            </td>
+            <td>${a.scholarship_title || 'Scholarship Scheme'}</td>
+            <td><span class="badge ${badgeClass}">${a.status.replace(/_/g, ' ')}</span></td>
+            <td>
+              <div style="display:flex;gap:6px;">
+                <button class="btn btn-primary btn-sm" onclick="openVerifyModal(${a.id})">
+                  Verify / Forward
+                </button>
+                <a href="/application-details.html?id=${a.id}" class="btn btn-outline btn-sm">
+                  Inspect Docs
+                </a>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function loadInstituteApplications() {
+      if (!requireAuth(['institute', 'admin', 'super_admin'])) return;
+
+      try {
+        const data = await apiRequest('/institute/applications');
+        allApps = data.applications || [];
+
+        if (data.stats) {
+          document.getElementById('stat-total').innerText = data.stats.total;
+          document.getElementById('stat-pending').innerText = data.stats.pending;
+          document.getElementById('stat-approved').innerText = data.stats.approved;
+        }
+
+        renderTable(allApps);
+      } catch (err) {
+        document.getElementById('institute-tbody').innerHTML = '<tr><td colspan="6" style="text-align:center;color:#dc2626;padding:20px;">Unable to load applications.</td></tr>';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadInstituteApplications);
+  </script>
+</body>
+</html>

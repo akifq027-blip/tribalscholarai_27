@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Application Tracking & Document Verification – TribalScholar AI</title>
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/components.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
+  <script src="/js/theme.js"></script>
+</head>
+<body>
+  <!-- Top Gov Bar -->
+  <div class="gov-top-bar">
+    <div class="gov-top-content">
+      <div class="gov-emblem-text">
+        <span>🏛️</span>
+        <span>GOVERNMENT OF INDIA | MINISTRY OF TRIBAL AFFAIRS</span>
+      </div>
+      <div class="gov-top-controls">
+        <div class="theme-selector-wrap">
+          <label for="portal-theme" style="font-size:11px;font-weight:600;">Theme:</label>
+          <select id="portal-theme" class="theme-preview-selector" aria-label="Select Portal Design Theme">
+            <option value="gov">Gov Standard</option>
+            <option value="tribal">Tribal Heritage</option>
+            <option value="contrast">High Contrast (A11y)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <header class="main-header">
+    <div class="nav-container">
+      <a href="/" class="brand-link">
+        <div class="brand-logo-badge">TS</div>
+        <div class="brand-info">
+          <h1>TribalScholar AI</h1>
+          <p>APPLICATION TRACKING & VERIFICATION</p>
+        </div>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/dashboard.html">Dashboard</a></li>
+          <li><a href="/profile.html">My Profile</a></li>
+          <li><a href="/scholarships.html">Find Scholarships</a></li>
+          <li><a href="/applications.html" class="active">My Applications</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-auth-buttons" id="nav-auth-container"></div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">
+      <a href="/applications.html" style="color:var(--primary);text-decoration:none;">&larr; Back to Applications</a>
+    </div>
+
+    <div id="app-loading" style="text-align:center;padding:40px;color:var(--text-muted);">
+      Loading application status and verification history...
+    </div>
+
+    <div id="app-content" style="display:none;max-width:960px;margin:0 auto;">
+      <!-- Header Banner Card -->
+      <div class="card" style="margin-bottom:24px;border-top:4px solid var(--primary);">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:12px;">
+          <div>
+            <span style="font-size:12px;color:var(--text-muted);text-transform:uppercase;font-weight:700;">Application Tracking Number</span>
+            <h2 style="font-size:24px;color:var(--primary);margin:4px 0;" id="app-number">TS2026-000000</h2>
+            <div style="font-size:15px;font-weight:600;color:var(--text-main);" id="app-scheme-title">Scholarship Scheme</div>
+          </div>
+          <div id="app-status-badge-container"></div>
+        </div>
+
+        <div class="scholarship-details-list">
+          <div>
+            <div class="detail-item-label">Applicant Name</div>
+            <div class="detail-item-val" id="app-student-name">Scholar</div>
+          </div>
+          <div>
+            <div class="detail-item-label">Verified Institution</div>
+            <div class="detail-item-val" id="app-institution">NIT Rourkela</div>
+          </div>
+          <div>
+            <div class="detail-item-label">Submission Date</div>
+            <div class="detail-item-val" id="app-submitted-at">N/A</div>
+          </div>
+          <div>
+            <div class="detail-item-label">Approved Benefit</div>
+            <div class="detail-item-val" style="color:var(--secondary);" id="app-amount">₹0</div>
+          </div>
+        </div>
+
+        <div style="background:var(--bg-muted);padding:12px;border-radius:var(--radius-sm);font-size:13px;" id="app-remarks-box">
+          <strong>Official Remarks:</strong> <span id="app-remarks-text">No remarks yet.</span>
+        </div>
+      </div>
+
+      <!-- Visual Interactive Timeline -->
+      <div class="card" style="margin-bottom:28px;">
+        <div class="card-header">
+          <h3 class="card-title" style="display:flex;align-items:center;gap:8px;">
+            <span>🛤️</span> Multi-Stage Verification Timeline
+          </h3>
+          <span style="font-size:12px;color:var(--text-muted);">Real-time tracking</span>
+        </div>
+
+        <div class="timeline-container" id="timeline-container">
+          <!-- Populated via JS -->
+        </div>
+      </div>
+
+      <!-- Upload Document Card -->
+      <div class="card" style="margin-bottom:28px;">
+        <div class="card-header">
+          <h3 class="card-title" style="display:flex;align-items:center;gap:8px;">
+            <span>📤</span> Upload Required Certificate
+          </h3>
+          <span style="font-size:12px;color:var(--text-muted);">Supported: PDF, JPG, PNG (&le; 5MB)</span>
+        </div>
+
+        <form id="upload-doc-form" style="display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:flex-end;">
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label" for="doc-type-select">Document Type <span class="required">*</span></label>
+            <select id="doc-type-select" class="form-select" required>
+              <option value="ST Caste Certificate">ST Community / Caste Certificate</option>
+              <option value="Income Certificate">Annual Family Income Certificate</option>
+              <option value="Previous Marksheet (Sem 4)">Previous Academic Marksheet</option>
+              <option value="College Bonafide Certificate">College Bonafide / Enrollment Letter</option>
+              <option value="Fee Structure / Receipt">Fee Structure / Payment Receipt</option>
+              <option value="Aadhaar Bank Passbook">Aadhaar Bank Passbook (DBT)</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label" for="doc-file-input">Select File <span class="required">*</span></label>
+            <input type="file" id="doc-file-input" class="form-control" accept=".pdf,.jpg,.jpeg,.png" required />
+          </div>
+
+          <button type="submit" id="upload-submit-btn" class="btn btn-primary" style="height:38px;">
+            Upload & Auto-Check
+          </button>
+        </form>
+      </div>
+
+      <!-- Uploaded Documents Table -->
+      <div class="card" style="margin-bottom:36px;">
+        <div class="card-header">
+          <h3 class="card-title" style="display:flex;align-items:center;gap:8px;">
+            <span>📋</span> Uploaded Application Documents
+          </h3>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Document Type</th>
+                <th>File Name</th>
+                <th>Upload Date</th>
+                <th>Status</th>
+                <th>Verification Notes</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="documents-tbody">
+              <!-- Populated via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- OCR / AI Verification Modal -->
+  <div class="modal-overlay" id="ocr-modal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title" style="display:flex;align-items:center;gap:6px;">
+          <span>🔍</span> AI Document Extraction & Verification
+        </h3>
+        <button class="modal-close-btn" onclick="closeOcrModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="ocr-modal-body">
+        <div style="text-align:center;padding:24px;">Extracting metadata...</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="closeOcrModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="main-footer">
+    <div class="footer-bottom">
+      &copy; 2026 Ministry of Tribal Affairs, Government of India. TribalScholar AI Portal.
+    </div>
+  </footer>
+
+  <script type="module" src="/js/api.js"></script>
+  <script type="module" src="/js/auth.js"></script>
+  <script type="module" src="/js/chat.js"></script>
+  <script type="module">
+    import { apiRequest, showToast, formatINR, formatDate } from '/js/api.js';
+    import { requireAuth } from '/js/auth.js';
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const applicationId = urlParams.get('id');
+
+    window.closeOcrModal = function() {
+      document.getElementById('ocr-modal').classList.remove('open');
+    };
+
+    window.inspectDocumentOcr = async function(docId) {
+      const modal = document.getElementById('ocr-modal');
+      const body = document.getElementById('ocr-modal-body');
+      modal.classList.add('open');
+      body.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-muted);">Running OCR extraction model on certificate...</div>';
+
+      try {
+        const res = await apiRequest(`/documents/${docId}/ocr-extract`);
+        if (res.success && res.extraction) {
+          const ext = res.extraction;
+          body.innerHTML = `
+            <div style="background:#f0fdf4;border:1px solid #bbf7d0;padding:12px;border-radius:var(--radius-md);margin-bottom:14px;">
+              <div style="font-weight:700;color:#166534;margin-bottom:2px;">
+                ✓ OCR Validation Score: ${Math.round(ext.verificationCheck.confidenceScore * 100)}%
+              </div>
+              <div style="font-size:12px;color:#166534;">
+                ${ext.verificationCheck.notes}
+              </div>
+            </div>
+
+            <h4 style="font-size:13px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">
+              Extracted Certificate Fields:
+            </h4>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px;background:var(--bg-muted);padding:14px;border-radius:var(--radius-sm);margin-bottom:14px;">
+              <div><strong>Candidate Name:</strong> ${ext.extractedData.candidateName}</div>
+              <div><strong>Certificate No:</strong> ${ext.extractedData.certificateNumber}</div>
+              <div><strong>Category:</strong> ${ext.extractedData.categoryDetected}</div>
+              <div><strong>Issue Date:</strong> ${ext.extractedData.issueDate}</div>
+              <div><strong>District & State:</strong> ${ext.extractedData.district}, ${ext.extractedData.state}</div>
+              <div><strong>Annual Income Proof:</strong> ${ext.extractedData.annualIncomeDetected}</div>
+            </div>
+
+            <p style="font-size:12px;color:var(--text-light);">
+              * Note: AI/OCR extraction assists verification by identifying mismatches. Final statutory approval is confirmed by your designated institutional and welfare officers.
+            </p>
+          `;
+        }
+      } catch (err) {
+        body.innerHTML = '<div style="color:#dc2626;padding:20px;">Could not complete document extraction.</div>';
+      }
+    };
+
+    async function loadApplicationDetails() {
+      if (!requireAuth()) return;
+      if (!applicationId) {
+        window.location.href = '/applications.html';
+        return;
+      }
+
+      try {
+        const data = await apiRequest(`/applications/${applicationId}`);
+        const app = data.application;
+        const docs = data.documents || [];
+        const timeline = data.timeline || [];
+
+        document.getElementById('app-loading').style.display = 'none';
+        document.getElementById('app-content').style.display = 'block';
+
+        document.getElementById('app-number').innerText = app.application_number;
+        document.getElementById('app-scheme-title').innerText = app.scholarship_title || app.fellowship_title || 'Tribal Scholarship';
+        document.getElementById('app-student-name').innerText = app.student_name;
+        document.getElementById('app-institution').innerText = app.institution_name || 'Assigned College';
+        document.getElementById('app-submitted-at').innerText = formatDate(app.submitted_at);
+        document.getElementById('app-amount').innerText = formatINR(app.scholarship_amount || app.fellowship_amount || 0);
+
+        if (app.remarks) {
+          document.getElementById('app-remarks-text').innerText = app.remarks;
+        }
+
+        // Status Badge
+        let badgeClass = 'badge-submitted';
+        if (['DOCUMENT_VERIFICATION', 'INSTITUTE_VERIFICATION'].includes(app.status)) badgeClass = 'badge-verification';
+        if (app.status === 'UNDER_REVIEW') badgeClass = 'badge-review';
+        if (app.status === 'APPROVED') badgeClass = 'badge-approved';
+        if (app.status === 'DISBURSED') badgeClass = 'badge-disbursed';
+        if (app.status === 'REJECTED') badgeClass = 'badge-rejected';
+
+        document.getElementById('app-status-badge-container').innerHTML = `
+          <span class="badge ${badgeClass}" style="font-size:13px;padding:5px 12px;">
+            ${app.status.replace(/_/g, ' ')}
+          </span>
+        `;
+
+        // Render Timeline
+        const tContainer = document.getElementById('timeline-container');
+        tContainer.innerHTML = timeline.map((stage, idx) => {
+          let stateClass = '';
+          if (stage.completed) stateClass = 'completed';
+          if (stage.active) stateClass += ' active';
+          if (stage.key === 'REJECTED') stateClass = 'rejected';
+
+          const icon = stage.completed ? '✓' : stage.active ? '●' : '○';
+
+          return `
+            <div class="timeline-step ${stateClass}">
+              <div class="timeline-indicator">${icon}</div>
+              <div class="timeline-content">
+                <div class="timeline-title">${stage.label}</div>
+                <div class="timeline-subtitle">
+                  ${stage.completed ? 'Stage completed and verified.' : stage.active ? 'Currently under review by assigned officer.' : 'Pending previous stages.'}
+                </div>
+                ${stage.timestamp ? `<div class="timeline-date">Updated: ${formatDate(stage.timestamp)}</div>` : ''}
+                ${stage.reason ? `<div style="color:#dc2626;font-size:12px;margin-top:4px;">Reason: ${stage.reason}</div>` : ''}
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        // Render Documents Table
+        renderDocumentsList(docs);
+      } catch (err) {
+        document.getElementById('app-loading').innerHTML = `
+          <div style="color:#dc2626;padding:30px;">
+            Unable to load application. It may not exist or access is restricted.
+          </div>
+        `;
+      }
+    }
+
+    function renderDocumentsList(docs) {
+      const tbody = document.getElementById('documents-tbody');
+      if (docs.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" style="text-align:center;padding:24px;color:var(--text-muted);">
+              No documents uploaded yet. Please upload your ST Caste & Income certificates above.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = docs.map(d => {
+        let statusBadge = '<span class="badge badge-verification">PENDING</span>';
+        if (d.verification_status === 'VERIFIED') statusBadge = '<span class="badge badge-approved">VERIFIED</span>';
+        if (d.verification_status === 'REJECTED') statusBadge = '<span class="badge badge-rejected">REJECTED</span>';
+
+        return `
+          <tr>
+            <td><strong>${d.document_type}</strong></td>
+            <td><a href="${d.file_path}" target="_blank" style="color:var(--primary);text-decoration:none;">📄 ${d.file_name}</a></td>
+            <td>${formatDate(d.uploaded_at)}</td>
+            <td>${statusBadge}</td>
+            <td><small>${d.verification_remarks || 'Awaiting officer scrutiny'}</small></td>
+            <td>
+              <button class="btn btn-outline btn-sm" onclick="inspectDocumentOcr(${d.id})" title="Inspect OCR & Profile Match">
+                ✨ AI Check
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Handle Upload Document Form
+    document.getElementById('upload-doc-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fileInput = document.getElementById('doc-file-input');
+      const typeSelect = document.getElementById('doc-type-select');
+      const btn = document.getElementById('upload-submit-btn');
+
+      if (!fileInput.files || fileInput.files.length === 0) {
+        showToast('Please select a file to upload.', 'error');
+        return;
+      }
+
+      const file = fileInput.files[0];
+      if (file.size > 5 * 1024 * 1024) {
+        showToast('File size exceeds 5MB limit.', 'error');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('document', file);
+      formData.append('application_id', applicationId);
+      formData.append('document_type', typeSelect.value);
+
+      btn.disabled = true;
+      btn.innerText = 'Uploading...';
+
+      try {
+        const res = await apiRequest('/documents/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        showToast(`${typeSelect.value} uploaded successfully!`, 'success');
+        fileInput.value = '';
+        btn.disabled = false;
+        btn.innerText = 'Upload & Auto-Check';
+
+        // Reload details
+        loadApplicationDetails();
+      } catch (err) {
+        btn.disabled = false;
+        btn.innerText = 'Upload & Auto-Check';
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', loadApplicationDetails);
+  </script>
+</body>
+</html>

@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TribalScholar AI – Scholarship & Fellowship Portal for Scheduled Tribes</title>
+  <meta name="description" content="AI-Enabled Scholarship and Fellowship Management System for Scheduled Tribes with real backend, MySQL database, and eligibility engine" />
+  <meta property="og:title" content="TribalScholar AI – Scheduled Tribes Scholarship Portal" />
+  <meta property="og:description" content="Official AI-Enabled Scholarship and Fellowship Management System for Scheduled Tribe Students." />
+  
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/components.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
+  <script src="/js/theme.js"></script>
+</head>
+<body>
+  <!-- Government Official Top Header Bar -->
+  <div class="gov-top-bar">
+    <div class="gov-top-content">
+      <div class="gov-emblem-text">
+        <span style="font-size:16px;">🏛️</span>
+        <span>GOVERNMENT OF INDIA | MINISTRY OF TRIBAL AFFAIRS</span>
+      </div>
+      <div class="gov-top-controls">
+        <div class="theme-selector-wrap">
+          <label for="portal-theme" style="font-size:11px;font-weight:600;">Theme:</label>
+          <select id="portal-theme" class="theme-preview-selector" aria-label="Select Portal Design Theme">
+            <option value="gov">Gov Standard</option>
+            <option value="tribal">Tribal Heritage</option>
+            <option value="contrast">High Contrast (A11y)</option>
+          </select>
+        </div>
+        <span style="opacity:0.6;">|</span>
+        <span style="font-size:11px;">Direct Benefit Transfer (DBT) Enabled</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIH Live Demo Quick Switcher -->
+  <div class="demo-banner">
+    <div class="demo-banner-content">
+      <div class="demo-banner-label">
+        <span class="demo-badge">SIH Demo</span>
+        <span>One-Click Fast Demo Login:</span>
+      </div>
+      <div class="demo-switch-btns">
+        <button type="button" class="demo-btn" data-demo-role="student">👨‍🎓 Student</button>
+        <button type="button" class="demo-btn" data-demo-role="institute">🏫 Institute</button>
+        <button type="button" class="demo-btn" data-demo-role="admin">🏛️ Admin</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Navigation -->
+  <header class="main-header">
+    <div class="nav-container">
+      <a href="/" class="brand-link">
+        <div class="brand-logo-badge">TS</div>
+        <div class="brand-info">
+          <h1>TribalScholar AI</h1>
+          <p>SCHOLARSHIP & FELLOWSHIP PORTAL FOR SCHEDULED TRIBES</p>
+        </div>
+      </a>
+
+      <nav class="nav-desktop-menu">
+        <ul class="nav-links">
+          <li><a href="/" class="active">Home</a></li>
+          <li><a href="/scholarships.html">Find Scholarships</a></li>
+          <li><a href="/dashboard.html">Student Portal</a></li>
+          <li><a href="/institute/dashboard.html">Institute Portal</a></li>
+          <li><a href="/admin/dashboard.html">Admin Command</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions-wrap" id="nav-auth-container">
+        <button type="button" class="nav-voice-btn" id="nav-header-voice-btn" title="Talk to TribalScholar Voice AI (Vapi)">
+          <span class="nav-voice-icon">🎙️</span>
+          <span class="nav-voice-text"><span class="nav-voice-full">Voice </span>AI</span>
+        </button>
+        <a href="/notifications.html" title="Notifications" class="btn btn-outline btn-sm nav-notif-btn" id="nav-header-notif-btn" aria-label="Notifications">
+          <span>🔔</span>
+          <span id="nav-notif-count" class="nav-notif-badge" style="display:none;">0</span>
+        </a>
+        <div class="nav-desktop-auth">
+          <a href="/login.html" class="btn btn-outline btn-sm">Log In</a>
+          <a href="/register.html" class="btn btn-primary btn-sm">Register</a>
+        </div>
+        <button type="button" class="nav-mobile-toggle" id="nav-hamburger-toggle" aria-label="Open Navigation Menu" title="Open Navigation Menu">
+          ☰
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main class="container">
+    <section class="hero-section">
+      <div style="max-width:760px;position:relative;z-index:2;">
+        <span style="background:var(--secondary);color:#fff;font-size:12px;font-weight:700;padding:4px 10px;border-radius:4px;text-transform:uppercase;letter-spacing:0.5px;">National Tribal Welfare Initiative</span>
+        <h2 class="hero-title">
+          Empowering Scheduled Tribe Scholars with Transparent, AI-Enabled Financial Support
+        </h2>
+        <p class="hero-desc">
+          Discover eligible central & state scholarships, verify merit conditions with deterministic eligibility rules, get AI personalized guidance, and track applications with real-time DBT disbursement tracking.
+        </p>
+        <div class="hero-btn-group">
+          <a href="/scholarships.html" class="btn btn-secondary btn-lg">Explore Scholarships & Fellowships</a>
+          <a href="/register.html" class="btn btn-outline btn-lg" style="color:#fff;border-color:rgba(255,255,255,0.4);">Register as Student</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Top Information / Feature Cards Section -->
+    <section class="top-info-feature-cards">
+      <div class="top-feature-card">
+        <div class="top-feature-icon">🏛️</div>
+        <div class="top-feature-content">
+          <h4>Official National Portal</h4>
+          <p>Direct Benefit Transfer (DBT) enabled under Ministry of Tribal Affairs, Government of India.</p>
+        </div>
+      </div>
+      <div class="top-feature-card">
+        <div class="top-feature-icon">🌿</div>
+        <div class="top-feature-content">
+          <h4>Tribal Heritage & Modern EdTech</h4>
+          <p>Deterministic statutory eligibility engine guaranteeing transparent student merit evaluation.</p>
+        </div>
+      </div>
+      <div class="top-feature-card">
+        <div class="top-feature-icon">♿</div>
+        <div class="top-feature-content">
+          <h4>High Contrast / Accessibility</h4>
+          <p>Multi-theme support with WCAG high contrast, screen reader compatibility, and Vapi Voice AI.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Key Live System Metrics -->
+    <section class="system-metrics-grid" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:16px;margin-bottom:32px;">
+      <div class="card" style="border-left:4px solid var(--primary);">
+        <div style="font-size:12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;">Active Schemes</div>
+        <div style="font-size:26px;font-weight:800;color:var(--primary);margin-top:4px;" id="metric-schemes">8+</div>
+        <div style="font-size:11px;color:var(--text-light);margin-top:2px;">Central & State ST Programs</div>
+      </div>
+      <div class="card" style="border-left:4px solid var(--secondary);">
+        <div style="font-size:12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;">Disbursed Funds</div>
+        <div style="font-size:26px;font-weight:800;color:var(--secondary);margin-top:4px;">₹14.8 Cr+</div>
+        <div style="font-size:11px;color:var(--text-light);margin-top:2px;">Direct Benefit Transfer (DBT)</div>
+      </div>
+      <div class="card" style="border-left:4px solid var(--accent-green);">
+        <div style="font-size:12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;">Verification Time</div>
+        <div style="font-size:26px;font-weight:800;color:var(--accent-green);margin-top:4px;">3.4 Days</div>
+        <div style="font-size:11px;color:var(--text-light);margin-top:2px;">Fast-tracked institutional review</div>
+      </div>
+      <div class="card" style="border-left:4px solid var(--accent-gold);">
+        <div style="font-size:12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;">Eligibility Accuracy</div>
+        <div style="font-size:26px;font-weight:800;color:var(--accent-gold);margin-top:4px;">100%</div>
+        <div style="font-size:11px;color:var(--text-light);margin-top:2px;">Deterministic rule engine</div>
+      </div>
+    </section>
+
+    <!-- Quick Search & Filter Banner -->
+    <section class="card" style="margin-bottom:32px;padding:20px;">
+      <h3 style="font-size:17px;margin-bottom:14px;color:var(--primary);display:flex;align-items:center;gap:8px;">
+        <span>🔍</span> Quick Scheme Search
+      </h3>
+      <form id="hero-search-form" class="hero-search-form" onsubmit="handleHeroSearch(event)">
+        <input type="text" id="hero-search-input" class="form-control" placeholder="Search by scheme name, course (e.g. B.Tech, MBBS), or provider..." />
+        <select id="hero-education-select" class="form-select">
+          <option value="all">All Education Levels</option>
+          <option value="Undergraduate">Undergraduate</option>
+          <option value="Postgraduate">Postgraduate</option>
+          <option value="Secondary">Secondary (Class 9-10)</option>
+        </select>
+        <select id="hero-type-select" class="form-select">
+          <option value="all">All Scheme Types</option>
+          <option value="Higher-Education">Higher Education</option>
+          <option value="Post-Matric">Post-Matric</option>
+          <option value="Merit-Based">Merit-Based</option>
+          <option value="Overseas">Overseas</option>
+          <option value="Special-Incentive">Special Girls STEM</option>
+        </select>
+        <button type="submit" class="btn btn-primary">Find Schemes</button>
+      </form>
+    </section>
+
+    <!-- Featured Scholarships Section -->
+    <section style="margin-bottom:40px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <div>
+          <h2 style="font-size:24px;color:var(--primary);">Flagship ST Welfare Scholarships</h2>
+          <p style="font-size:14px;color:var(--text-muted);">Verified central schemes open for 2026-2027 academic session</p>
+        </div>
+        <a href="/scholarships.html" class="btn btn-outline btn-sm">View All Schemes &rarr;</a>
+      </div>
+
+      <div class="scholarship-grid" id="featured-scholarships-container">
+        <!-- Rendered via JS -->
+        <div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--text-muted);">
+          Loading verified government scholarship schemes...
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works Timeline Flow -->
+    <section class="card" style="margin-bottom:40px;padding:32px;">
+      <h2 style="font-size:22px;color:var(--primary);text-align:center;margin-bottom:8px;">
+        Transparent 4-Step Application Workflow
+      </h2>
+      <p style="text-align:center;color:var(--text-muted);font-size:14px;margin-bottom:32px;">
+        Designed to protect Scheduled Tribe students from verification delays and arbitrary rejections
+      </p>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:24px;text-align:center;">
+        <div style="background:var(--bg-muted);padding:20px;border-radius:var(--radius-md);">
+          <div style="width:48px;height:48px;background:var(--primary);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-weight:700;font-size:18px;">1</div>
+          <h4 style="font-size:15px;margin-bottom:6px;">Create Profile</h4>
+          <p style="font-size:12px;color:var(--text-muted);">Enter ST category, income, academic score, and college details once.</p>
+        </div>
+        <div style="background:var(--bg-muted);padding:20px;border-radius:var(--radius-md);">
+          <div style="width:48px;height:48px;background:var(--secondary);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-weight:700;font-size:18px;">2</div>
+          <h4 style="font-size:15px;margin-bottom:6px;">Check Eligibility</h4>
+          <p style="font-size:12px;color:var(--text-muted);">Deterministic rule engine checks criteria with clear pass/fail reasons.</p>
+        </div>
+        <div style="background:var(--bg-muted);padding:20px;border-radius:var(--radius-md);">
+          <div style="width:48px;height:48px;background:var(--accent-green);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-weight:700;font-size:18px;">3</div>
+          <h4 style="font-size:15px;margin-bottom:6px;">Institutional Nodal Review</h4>
+          <p style="font-size:12px;color:var(--text-muted);">Your university officer verifies enrollment & marksheet online.</p>
+        </div>
+        <div style="background:var(--bg-muted);padding:20px;border-radius:var(--radius-md);">
+          <div style="width:48px;height:48px;background:#059669;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-weight:700;font-size:18px;">4</div>
+          <h4 style="font-size:15px;margin-bottom:6px;">Direct DBT Disbursement</h4>
+          <p style="font-size:12px;color:var(--text-muted);">Funds transfer directly into your Aadhaar-linked bank account.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Official Footer -->
+  <footer class="main-footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <h2>TribalScholar AI</h2>
+        <p style="font-size:13px;line-height:1.6;color:#94a3b8;margin-bottom:12px;">
+          National AI-Enabled Scholarship and Fellowship Management System for Scheduled Tribes (ST), Government of India.
+        </p>
+        <p style="font-size:12px;color:#64748b;">Built with clean full-stack architecture, deterministic statutory rules, and MySQL persistence.</p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Portals</h4>
+        <ul>
+          <li><a href="/scholarships.html">Scholarship Directory</a></li>
+          <li><a href="/dashboard.html">Student Dashboard</a></li>
+          <li><a href="/institute/dashboard.html">Institute Portal</a></li>
+          <li><a href="/admin/dashboard.html">Welfare Admin Center</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Key Schemes</h4>
+        <ul>
+          <li><a href="/scholarships.html">Higher Education ST Scheme</a></li>
+          <li><a href="/scholarships.html">Post-Matric Scholarship</a></li>
+          <li><a href="/scholarships.html">Top Class Education</a></li>
+          <li><a href="/scholarships.html">National Overseas NOS</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Help & Support</h4>
+        <ul>
+          <li><a href="https://tribal.nic.in" target="_blank" rel="noopener">Ministry of Tribal Affairs</a></li>
+          <li><a href="https://scholarships.gov.in" target="_blank" rel="noopener">National Scholarship Portal</a></li>
+          <li><a href="/notifications.html">Portal Announcements</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      &copy; 2026 Ministry of Tribal Affairs, Government of India. All rights reserved. Smart India Hackathon (SIH) Project Demonstration.
+    </div>
+  </footer>
+
+  <script type="module" src="/js/api.js"></script>
+  <script type="module" src="/js/auth.js"></script>
+  <script type="module" src="/js/chat.js"></script>
+  <script type="module">
+    import { apiRequest, formatINR, formatDate, getDaysRemaining } from '/js/api.js';
+
+    window.handleHeroSearch = function(e) {
+      e.preventDefault();
+      const q = document.getElementById('hero-search-input').value;
+      const edu = document.getElementById('hero-education-select').value;
+      const type = document.getElementById('hero-type-select').value;
+      window.location.href = `/scholarships.html?search=${encodeURIComponent(q)}&education_level=${encodeURIComponent(edu)}&scholarship_type=${encodeURIComponent(type)}`;
+    };
+
+    async function loadFeaturedScholarships() {
+      const container = document.getElementById('featured-scholarships-container');
+      try {
+        const data = await apiRequest('/scholarships?sort_by=deadline', { silent: true });
+        if (data.scholarships && data.scholarships.length > 0) {
+          const featured = data.scholarships.slice(0, 6);
+          container.innerHTML = featured.map(s => {
+            const days = getDaysRemaining(s.application_deadline);
+            const isSoon = days <= 30 && days > 0;
+            return `
+              <div class="scholarship-card">
+                <div class="scholarship-card-top">
+                  <span class="scheme-type-tag">${s.scholarship_type || 'General'}</span>
+                  ${s.matchPercentage !== null ? `
+                    <span class="match-badge ${s.matchPercentage >= 90 ? 'match-high' : s.matchPercentage >= 65 ? 'match-medium' : 'match-low'}">
+                      ${s.matchPercentage}% Match
+                    </span>
+                  ` : ''}
+                </div>
+                <h3 class="scholarship-card-title">${s.title}</h3>
+                <div class="scholarship-provider">🏛️ ${s.provider}</div>
+                <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
+                  ${s.description}
+                </p>
+                <div class="scholarship-details-list">
+                  <div>
+                    <div class="detail-item-label">Amount / Grant</div>
+                    <div class="detail-item-val" style="color:var(--secondary);">${formatINR(s.amount)}/year</div>
+                  </div>
+                  <div>
+                    <div class="detail-item-label">Deadline</div>
+                    <div class="detail-item-val ${isSoon ? 'text-danger' : ''}" style="${isSoon ? 'color:#dc2626;' : ''}">
+                      ${formatDate(s.application_deadline)} (${days > 0 ? days + ' days left' : 'Closed'})
+                    </div>
+                  </div>
+                  <div>
+                    <div class="detail-item-label">Income Limit</div>
+                    <div class="detail-item-val">&le; ${formatINR(s.maximum_income)}</div>
+                  </div>
+                  <div>
+                    <div class="detail-item-label">Category</div>
+                    <div class="detail-item-val">ST Community</div>
+                  </div>
+                </div>
+                <div class="scholarship-card-actions">
+                  <a href="/scholarship-details.html?id=${s.id}" class="btn btn-outline btn-sm" style="flex:1;">View Details</a>
+                  <a href="/scholarship-details.html?id=${s.id}&action=apply" class="btn btn-primary btn-sm" style="flex:1;">Apply Now</a>
+                </div>
+              </div>
+            `;
+          }).join('');
+        } else {
+          container.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;">No scholarships found.</div>';
+        }
+      } catch (err) {
+        container.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;color:#dc2626;">Unable to load scholarships. Check server.</div>';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadFeaturedScholarships);
+  </script>
+</body>
+</html>

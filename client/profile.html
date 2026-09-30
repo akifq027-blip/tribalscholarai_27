@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Profile – TribalScholar AI</title>
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/components.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
+  <script src="/js/theme.js"></script>
+</head>
+<body>
+  <!-- Top Gov Bar -->
+  <div class="gov-top-bar">
+    <div class="gov-top-content">
+      <div class="gov-emblem-text">
+        <span>🏛️</span>
+        <span>GOVERNMENT OF INDIA | MINISTRY OF TRIBAL AFFAIRS</span>
+      </div>
+      <div class="gov-top-controls">
+        <div class="theme-selector-wrap">
+          <label for="portal-theme" style="font-size:11px;font-weight:600;">Theme:</label>
+          <select id="portal-theme" class="theme-preview-selector" aria-label="Select Portal Design Theme">
+            <option value="gov">Gov Standard</option>
+            <option value="tribal">Tribal Heritage</option>
+            <option value="contrast">High Contrast (A11y)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <header class="main-header">
+    <div class="nav-container">
+      <a href="/" class="brand-link">
+        <div class="brand-logo-badge">TS</div>
+        <div class="brand-info">
+          <h1>TribalScholar AI</h1>
+          <p>SCHEDULED TRIBE STUDENT PROFILE</p>
+        </div>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/dashboard.html">Dashboard</a></li>
+          <li><a href="/profile.html" class="active">My Profile</a></li>
+          <li><a href="/scholarships.html">Find Scholarships</a></li>
+          <li><a href="/applications.html">My Applications</a></li>
+          <li><a href="/notifications.html">Notifications</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-auth-buttons" id="nav-auth-container"></div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div style="max-width:860px;margin:0 auto;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <div>
+          <h2 style="font-size:24px;color:var(--primary);">Scheduled Tribe Student Profile</h2>
+          <p style="font-size:14px;color:var(--text-muted);">
+            Save your academic, caste, and income credentials once. You can save progress at any step.
+          </p>
+        </div>
+        <div style="text-align:right;">
+          <span style="font-size:12px;color:var(--text-muted);">Completion:</span>
+          <span style="font-size:18px;font-weight:800;color:var(--secondary);" id="profile-percent-badge">0%</span>
+        </div>
+      </div>
+
+      <!-- Step Navigation Indicators -->
+      <div style="display:flex;justify-content:space-between;background:var(--bg-surface);padding:14px 20px;border-radius:var(--radius-md);margin-bottom:24px;box-shadow:var(--shadow-sm);border:1px solid var(--border-light);overflow-x:auto;gap:12px;">
+        <button type="button" class="btn btn-sm step-btn btn-primary" data-step="1" onclick="goToStep(1)">1. Personal</button>
+        <button type="button" class="btn btn-sm step-btn btn-outline" data-step="2" onclick="goToStep(2)">2. Education</button>
+        <button type="button" class="btn btn-sm step-btn btn-outline" data-step="3" onclick="goToStep(3)">3. Category & Domicile</button>
+        <button type="button" class="btn btn-sm step-btn btn-outline" data-step="4" onclick="goToStep(4)">4. Family & Income</button>
+        <button type="button" class="btn btn-sm step-btn btn-outline" data-step="5" onclick="goToStep(5)">5. Bank DBT</button>
+        <button type="button" class="btn btn-sm step-btn btn-outline" data-step="6" onclick="goToStep(6)">6. Review & Save</button>
+      </div>
+
+      <form id="profile-multi-form" class="card">
+        <!-- Step 1: Personal Information -->
+        <div class="step-panel" id="step-panel-1">
+          <h3 class="card-title" style="margin-bottom:16px;">Step 1: Personal Information</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <div class="form-group" style="grid-column:1/-1;">
+              <label class="form-label" for="prof-name">Full Legal Name <span class="required">*</span></label>
+              <input type="text" id="prof-name" class="form-control" placeholder="As per official documents" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="prof-dob">Date of Birth</label>
+              <input type="date" id="prof-dob" class="form-control" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="prof-gender">Gender</label>
+              <select id="prof-gender" class="form-select">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="prof-phone">Mobile Number</label>
+              <input type="tel" id="prof-phone" class="form-control" placeholder="+91 98765 43210" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="prof-email">Email Address</label>
+              <input type="email" id="prof-email" class="form-control" disabled style="background:#f1f5f9;" />
+            </div>
+          </div>
+          <div style="display:flex;justify-content:flex-end;margin-top:20px;gap:10px;">
+            <button type="button" class="btn btn-outline" onclick="saveProfilePartial()">Save Progress</button>
+            <button type="button" class="btn btn-primary" onclick="goToStep(2)">Next: Education &rarr;</button>
+          </div>
+        </div>
+
+        <!-- Step 2: Education -->
+        <div class="step-panel" id="step-panel-2" style="display:none;">
+          <h3 class="card-title" style="margin-bottom:16px;">Step 2: Educational Details</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <div class="form-group">
+              <label class="form-label" for="prof-education-level">Current Education Level</label>
+              <select id="prof-education-level" class="form-select">
+                <option value="Undergraduate">Undergraduate (B.Tech / MBBS / B.Sc / B.A / B.Com)</option>
+                <option value="Postgraduate">Postgraduate (M.Tech / M.Sc / M.A / MBA)</option>
+                <option value="Doctorate">Doctorate (Ph.D. / M.Phil)</option>
+                <option value="Secondary">Secondary (Class 9 - 10)</option>
+                <option value="Higher Secondary">Higher Secondary (Class 11 - 12)</option>
+                <option value="Diploma">Polytechnic / Diploma</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="prof-course">Course Name / Specialization</label>
+              <input type="text" id="prof-course" class="form-control" placeholder="e.g. B.Tech Computer Science" />
+            </div>
+            <div class="form-group" style="grid-column:1/-1;">
+              <label class="form-label" for="prof-institution">Institution / University Name</label>
+              <input type="text" id="prof-institution" class="form-control" placeholder="e.g. National Institute of Technology Rourkela" />
+              <div class="form-hint">Used to route applications to your Institute Nodal Officer for verification.</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="prof-year">Current Year of Study</label>
+              <select id="prof-year" class="form-select">
+                <option value="1">1st Year</option>
+                <option value="2">2nd Year</option>
+                <option value="3">3rd Year</option>
+                <option value="4">4th Year</option>
+                <option value="5">5th Year</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="prof-percentage">Previous Year Percentage / Score (%)</label>
+              <input type="number" step="0.01" max="100" id="prof-percentage" class="form-control" placeholder="e.g. 84.50" />
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:20px;">
+            <button type="button" class="btn btn-outline" onclick="goToStep(1)">&larr; Back</button>
+            <div style="display:flex;gap:10px;">
+              <button type="button" class="btn btn-outline" onclick="saveProfilePartial()">Save Progress</button>
+              <button type="button" class="btn btn-primary" onclick="goToStep(3)">Next: Category & Domicile &rarr;</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: Category & Domicile -->
+        <div class="step-panel" id="step-panel-3" style="display:none;">
+          <h3 class="card-title" style="margin-bottom:16px;">Step 3: Social Category & Domicile</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <div class="form-group">
+              <label class="form-label" for="prof-category">Constitutional Category</label>
+              <input type="text" id="prof-category" class="form-control" value="Scheduled Tribe (ST)" readonly style="background:#f1f5f9;font-weight:700;" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="prof-state">Home State / UT</label>
+              <input type="text" id="prof-state" class="form-control" placeholder="e.g. Odisha, Jharkhand, Madhya Pradesh, Assam" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="prof-district">Home District</label>
+              <input type="text" id="prof-district" class="form-control" placeholder="e.g. Mayurbhanj, Ranchi, Bastar" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="prof-domicile">Domicile Certificate Issuing State</label>
+              <input type="text" id="prof-domicile" class="form-control" placeholder="State name" />
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:20px;">
+            <button type="button" class="btn btn-outline" onclick="goToStep(2)">&larr; Back</button>
+            <div style="display:flex;gap:10px;">
+              <button type="button" class="btn btn-outline" onclick="saveProfilePartial()">Save Progress</button>
+              <button type="button" class="btn btn-primary" onclick="goToStep(4)">Next: Family & Income &rarr;</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4: Family Information -->
+        <div class="step-panel" id="step-panel-4" style="display:none;">
+          <h3 class="card-title" style="margin-bottom:16px;">Step 4: Family & Annual Income</h3>
+          <div style="display:grid;grid-template-columns:1fr;gap:16px;">
+            <div class="form-group">
+              <label class="form-label" for="prof-income">Annual Family Income from All Sources (INR) <span class="required">*</span></label>
+              <input type="number" id="prof-income" class="form-control" placeholder="e.g. 180000" required />
+              <div class="form-hint">Must match your Tahsildar / Revenue Authority Income Certificate. Many schemes require income &le; ₹2.5 Lakhs or ₹6 Lakhs.</div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:20px;">
+            <button type="button" class="btn btn-outline" onclick="goToStep(3)">&larr; Back</button>
+            <div style="display:flex;gap:10px;">
+              <button type="button" class="btn btn-outline" onclick="saveProfilePartial()">Save Progress</button>
+              <button type="button" class="btn btn-primary" onclick="goToStep(5)">Next: Bank DBT &rarr;</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 5: Bank Account (DBT) -->
+        <div class="step-panel" id="step-panel-5" style="display:none;">
+          <h3 class="card-title" style="margin-bottom:16px;">Step 5: Bank Account for Direct Benefit Transfer (DBT)</h3>
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">
+            For security and privacy, only store your Aadhaar-linked bank account last 4 digits in profile. Full details are verified directly through DBT Public Financial Management System (PFMS).
+          </p>
+          <div style="display:grid;grid-template-columns:1fr;gap:16px;">
+            <div class="form-group">
+              <label class="form-label" for="prof-bank-last4">Aadhaar-Linked Bank Account (Last 4 Digits)</label>
+              <input type="text" maxlength="4" pattern="[0-9]{4}" id="prof-bank-last4" class="form-control" placeholder="e.g. 4921" />
+              <div class="form-hint">Confirm that your bank account is Aadhaar seeded for government scholarship DBT credit.</div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:20px;">
+            <button type="button" class="btn btn-outline" onclick="goToStep(4)">&larr; Back</button>
+            <div style="display:flex;gap:10px;">
+              <button type="button" class="btn btn-outline" onclick="saveProfilePartial()">Save Progress</button>
+              <button type="button" class="btn btn-primary" onclick="goToStep(6)">Next: Review & Save &rarr;</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 6: Review -->
+        <div class="step-panel" id="step-panel-6" style="display:none;">
+          <h3 class="card-title" style="margin-bottom:16px;">Step 6: Review & Finalize Profile</h3>
+          <div style="background:var(--bg-muted);padding:16px;border-radius:var(--radius-md);margin-bottom:20px;" id="profile-review-summary">
+            <!-- Populated via JS -->
+          </div>
+
+          <div style="display:flex;justify-content:space-between;margin-top:20px;">
+            <button type="button" class="btn btn-outline" onclick="goToStep(5)">&larr; Edit Details</button>
+            <button type="button" id="save-final-btn" class="btn btn-success" onclick="saveProfileFinal()">
+              ✓ Save & Complete Profile
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <footer class="main-footer">
+    <div class="footer-bottom">
+      &copy; 2026 Ministry of Tribal Affairs, Government of India. TribalScholar AI Portal.
+    </div>
+  </footer>
+
+  <script type="module" src="/js/api.js"></script>
+  <script type="module" src="/js/auth.js"></script>
+  <script type="module" src="/js/chat.js"></script>
+  <script type="module">
+    import { apiRequest, showToast, formatINR } from '/js/api.js';
+    import { requireAuth } from '/js/auth.js';
+
+    let currentStep = 1;
+
+    window.goToStep = function(step) {
+      currentStep = step;
+      document.querySelectorAll('.step-panel').forEach(p => p.style.display = 'none');
+      document.getElementById(`step-panel-${step}`).style.display = 'block';
+
+      document.querySelectorAll('.step-btn').forEach(btn => {
+        const s = parseInt(btn.getAttribute('data-step'), 10);
+        if (s === step) {
+          btn.className = 'btn btn-sm step-btn btn-primary';
+        } else if (s < step) {
+          btn.className = 'btn btn-sm step-btn btn-outline';
+          btn.style.borderColor = '#15803d';
+        } else {
+          btn.className = 'btn btn-sm step-btn btn-outline';
+        }
+      });
+
+      if (step === 6) {
+        renderReviewSummary();
+      }
+    };
+
+    function renderReviewSummary() {
+      const summaryEl = document.getElementById('profile-review-summary');
+      const name = document.getElementById('prof-name').value;
+      const edu = document.getElementById('prof-education-level').value;
+      const course = document.getElementById('prof-course').value;
+      const inst = document.getElementById('prof-institution').value;
+      const pct = document.getElementById('prof-percentage').value;
+      const state = document.getElementById('prof-state').value;
+      const dist = document.getElementById('prof-district').value;
+      const inc = document.getElementById('prof-income').value;
+      const bank = document.getElementById('prof-bank-last4').value;
+
+      summaryEl.innerHTML = `
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:13px;">
+          <div><strong>Candidate Name:</strong> ${name || 'N/A'}</div>
+          <div><strong>Category:</strong> Scheduled Tribe (ST)</div>
+          <div><strong>Education:</strong> ${edu || 'N/A'} (${course || 'N/A'})</div>
+          <div><strong>Institution:</strong> ${inst || 'N/A'}</div>
+          <div><strong>Previous Score:</strong> ${pct ? pct + '%' : 'N/A'}</div>
+          <div><strong>State & District:</strong> ${state || 'N/A'}, ${dist || 'N/A'}</div>
+          <div><strong>Annual Family Income:</strong> ${inc ? formatINR(inc) : 'N/A'}</div>
+          <div><strong>Bank DBT Account:</strong> **** **** ${bank || 'N/A'}</div>
+        </div>
+      `;
+    }
+
+    async function getFormData() {
+      return {
+        full_name: document.getElementById('prof-name').value.trim(),
+        date_of_birth: document.getElementById('prof-dob').value || null,
+        gender: document.getElementById('prof-gender').value,
+        phone: document.getElementById('prof-phone').value.trim() || null,
+        education_level: document.getElementById('prof-education-level').value,
+        course: document.getElementById('prof-course').value.trim() || null,
+        institution_name: document.getElementById('prof-institution').value.trim() || null,
+        year_of_study: document.getElementById('prof-year').value,
+        percentage: document.getElementById('prof-percentage').value || null,
+        category: 'Scheduled Tribe (ST)',
+        state: document.getElementById('prof-state').value.trim() || null,
+        district: document.getElementById('prof-district').value.trim() || null,
+        domicile: document.getElementById('prof-domicile').value.trim() || null,
+        annual_family_income: document.getElementById('prof-income').value || null,
+        bank_account_last4: document.getElementById('prof-bank-last4').value.trim() || null,
+      };
+    }
+
+    window.saveProfilePartial = async function() {
+      try {
+        const payload = await getFormData();
+        const res = await apiRequest('/students/profile', {
+          method: 'PUT',
+          body: JSON.stringify(payload),
+        });
+        showToast('Progress saved successfully!', 'success');
+        if (res.profile && res.profile.completion !== undefined) {
+          document.getElementById('profile-percent-badge').innerText = `${res.profile.completion}%`;
+        }
+      } catch (e) {}
+    };
+
+    window.saveProfileFinal = async function() {
+      const btn = document.getElementById('save-final-btn');
+      btn.disabled = true;
+      btn.innerText = 'Saving profile...';
+      try {
+        const payload = await getFormData();
+        await apiRequest('/students/profile', {
+          method: 'PUT',
+          body: JSON.stringify(payload),
+        });
+        showToast('Profile completed and saved successfully!', 'success');
+        setTimeout(() => {
+          window.location.href = '/dashboard.html';
+        }, 800);
+      } catch (e) {
+        btn.disabled = false;
+        btn.innerText = '✓ Save & Complete Profile';
+      }
+    };
+
+    async function loadCurrentProfile() {
+      if (!requireAuth(['student', 'admin', 'super_admin'])) return;
+      try {
+        const data = await apiRequest('/students/profile');
+        if (data.user) {
+          document.getElementById('prof-name').value = data.user.full_name || '';
+          document.getElementById('prof-email').value = data.user.email || '';
+          document.getElementById('prof-phone').value = data.user.phone || '';
+        }
+        if (data.profile) {
+          const p = data.profile;
+          if (p.date_of_birth) document.getElementById('prof-dob').value = p.date_of_birth.split('T')[0];
+          if (p.gender) document.getElementById('prof-gender').value = p.gender;
+          if (p.education_level) document.getElementById('prof-education-level').value = p.education_level;
+          if (p.course) document.getElementById('prof-course').value = p.course;
+          if (p.institution_name) document.getElementById('prof-institution').value = p.institution_name;
+          if (p.year_of_study) document.getElementById('prof-year').value = p.year_of_study;
+          if (p.percentage) document.getElementById('prof-percentage').value = p.percentage;
+          if (p.state) document.getElementById('prof-state').value = p.state;
+          if (p.district) document.getElementById('prof-district').value = p.district;
+          if (p.domicile) document.getElementById('prof-domicile').value = p.domicile;
+          if (p.annual_family_income) document.getElementById('prof-income').value = p.annual_family_income;
+          if (p.bank_account_last4) document.getElementById('prof-bank-last4').value = p.bank_account_last4;
+          if (p.completion !== undefined) {
+            document.getElementById('profile-percent-badge').innerText = `${p.completion}%`;
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load profile:', err);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadCurrentProfile);
+  </script>
+</body>
+</html>

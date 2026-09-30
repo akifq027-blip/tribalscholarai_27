@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manage Scholarships & Schemes – TribalScholar AI</title>
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/components.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
+  <script src="/js/theme.js"></script>
+</head>
+<body>
+  <div class="gov-top-bar">
+    <div class="gov-top-content">
+      <div class="gov-emblem-text">
+        <span>🏛️</span>
+        <span>GOVERNMENT OF INDIA | MINISTRY OF TRIBAL AFFAIRS</span>
+      </div>
+      <div class="gov-top-controls">
+        <div class="theme-selector-wrap">
+          <label for="portal-theme" style="font-size:11px;font-weight:600;">Theme:</label>
+          <select id="portal-theme" class="theme-preview-selector" aria-label="Select Portal Design Theme">
+            <option value="gov">Gov Standard</option>
+            <option value="tribal">Tribal Heritage</option>
+            <option value="contrast">High Contrast (A11y)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <header class="main-header">
+    <div class="nav-container">
+      <a href="/" class="brand-link">
+        <div class="brand-logo-badge">TS</div>
+        <div class="brand-info">
+          <h1>TribalScholar AI</h1>
+          <p>SCHOLARSHIP CRUD MANAGEMENT</p>
+        </div>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/admin/dashboard.html">Overview</a></li>
+          <li><a href="/admin/scholarships.html" class="active">Manage Schemes</a></li>
+          <li><a href="/admin/applications.html">Applications</a></li>
+          <li><a href="/admin/students.html">Students</a></li>
+          <li><a href="/admin/analytics.html">Analytics</a></li>
+          <li><a href="/admin/audit-logs.html">Audit Logs</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-auth-buttons" id="nav-auth-container"></div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:24px;">
+      <div>
+        <h2 style="font-size:24px;color:var(--primary);">Tribal Welfare Schemes Management</h2>
+        <p style="font-size:14px;color:var(--text-muted);">
+          Create, edit, configure statutory eligibility criteria, and publish/deactivate scholarship schemes
+        </p>
+      </div>
+      <button class="btn btn-primary" onclick="openSchemeModal()">
+        + Create New Scholarship Scheme
+      </button>
+    </div>
+
+    <!-- Schemes Table -->
+    <div class="card">
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Scheme Title</th>
+              <th>Type</th>
+              <th>Grant Amount</th>
+              <th>Deadline</th>
+              <th>Income Ceiling</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="schemes-tbody">
+            <tr>
+              <td colspan="8" style="text-align:center;padding:24px;color:var(--text-muted);">
+                Loading scholarship schemes...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- Create / Edit Scheme Modal -->
+  <div class="modal-overlay" id="scheme-modal">
+    <div class="modal-container" style="max-width:720px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="scheme-modal-title">Create Scholarship Scheme</h3>
+        <button class="modal-close-btn" onclick="closeSchemeModal()">&times;</button>
+      </div>
+      <form id="scheme-form">
+        <input type="hidden" id="sch-id" />
+        <div class="modal-body" style="max-height:70vh;overflow-y:auto;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+            <div class="form-group" style="grid-column:1/-1;">
+              <label class="form-label" for="sch-title">Scheme Title <span class="required">*</span></label>
+              <input type="text" id="sch-title" class="form-control" placeholder="e.g. National Overseas Scholarship for ST Students" required />
+            </div>
+
+            <div class="form-group" style="grid-column:1/-1;">
+              <label class="form-label" for="sch-provider">Provider / Ministry <span class="required">*</span></label>
+              <input type="text" id="sch-provider" class="form-control" placeholder="Ministry of Tribal Affairs, Govt. of India" required />
+            </div>
+
+            <div class="form-group" style="grid-column:1/-1;">
+              <label class="form-label" for="sch-desc">Scheme Description <span class="required">*</span></label>
+              <textarea id="sch-desc" class="form-control" rows="3" placeholder="Provide complete objective, scope, and benefit description" required></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="sch-type">Scheme Type <span class="required">*</span></label>
+              <select id="sch-type" class="form-select" required>
+                <option value="Higher-Education">Higher Education</option>
+                <option value="Post-Matric">Post-Matric</option>
+                <option value="Pre-Matric">Pre-Matric</option>
+                <option value="Merit-Based">Merit-Based</option>
+                <option value="Overseas">Overseas</option>
+                <option value="Special-Incentive">Special Girls STEM</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="sch-amount">Grant Amount (INR/Year) <span class="required">*</span></label>
+              <input type="number" id="sch-amount" class="form-control" placeholder="250000" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="sch-start">Application Start Date <span class="required">*</span></label>
+              <input type="date" id="sch-start" class="form-control" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="sch-deadline">Application Deadline <span class="required">*</span></label>
+              <input type="date" id="sch-deadline" class="form-control" required />
+            </div>
+
+            <!-- Eligibility Rules -->
+            <div class="form-group">
+              <label class="form-label" for="sch-edu">Target Education Level</label>
+              <input type="text" id="sch-edu" class="form-control" placeholder="Undergraduate, Postgraduate, Any" value="Undergraduate" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="sch-course">Eligible Courses</label>
+              <input type="text" id="sch-course" class="form-control" placeholder="e.g. B.Tech, MBBS, All Courses" value="All Courses" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="sch-income">Max Annual Family Income (INR)</label>
+              <input type="number" id="sch-income" class="form-control" placeholder="250000" value="250000" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="sch-score">Min Academic Score (%)</label>
+              <input type="number" step="0.1" id="sch-score" class="form-control" placeholder="50.0" value="50.0" />
+            </div>
+
+            <div class="form-group" style="grid-column:1/-1;">
+              <label class="form-label" for="sch-docs">Required Documents (Comma separated)</label>
+              <input type="text" id="sch-docs" class="form-control" placeholder="ST Caste Certificate, Income Certificate, Previous Marksheet, College Bonafide" />
+            </div>
+
+            <div class="form-group" style="grid-column:1/-1;">
+              <label class="form-label" for="sch-url">Official Scheme Portal URL</label>
+              <input type="url" id="sch-url" class="form-control" placeholder="https://tribal.nic.in" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="sch-status">Publication Status</label>
+              <select id="sch-status" class="form-select">
+                <option value="active">Active (Published)</option>
+                <option value="inactive">Inactive (Deactivated)</option>
+                <option value="draft">Draft</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeSchemeModal()">Cancel</button>
+          <button type="submit" id="scheme-save-btn" class="btn btn-primary">Save Scheme</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer class="main-footer">
+    <div class="footer-bottom">
+      &copy; 2026 Ministry of Tribal Affairs, Government of India. TribalScholar AI Console.
+    </div>
+  </footer>
+
+  <script type="module" src="/js/api.js"></script>
+  <script type="module" src="/js/auth.js"></script>
+  <script type="module">
+    import { apiRequest, showToast, formatINR, formatDate } from '/js/api.js';
+    import { requireAuth } from '/js/auth.js';
+
+    let allSchemes = [];
+
+    window.closeSchemeModal = function() {
+      document.getElementById('scheme-modal').classList.remove('open');
+    };
+
+    window.openSchemeModal = function(schemeId = null) {
+      document.getElementById('scheme-form').reset();
+      document.getElementById('sch-id').value = '';
+
+      if (schemeId) {
+        const s = allSchemes.find(x => x.id === schemeId);
+        if (s) {
+          document.getElementById('scheme-modal-title').innerText = 'Edit Scholarship Scheme';
+          document.getElementById('sch-id').value = s.id;
+          document.getElementById('sch-title').value = s.title;
+          document.getElementById('sch-provider').value = s.provider;
+          document.getElementById('sch-desc').value = s.description;
+          document.getElementById('sch-type').value = s.scholarship_type;
+          document.getElementById('sch-amount').value = s.amount;
+          if (s.application_start) document.getElementById('sch-start').value = s.application_start.split('T')[0];
+          if (s.application_deadline) document.getElementById('sch-deadline').value = s.application_deadline.split('T')[0];
+          document.getElementById('sch-edu').value = s.education_level || 'Any';
+          document.getElementById('sch-course').value = s.course || 'All Courses';
+          document.getElementById('sch-income').value = s.maximum_income;
+          document.getElementById('sch-score').value = s.minimum_percentage;
+          document.getElementById('sch-docs').value = s.required_documents || '';
+          document.getElementById('sch-url').value = s.official_url || '';
+          document.getElementById('sch-status').value = s.status;
+        }
+      } else {
+        document.getElementById('scheme-modal-title').innerText = 'Create Scholarship Scheme';
+        document.getElementById('sch-start').value = new Date().toISOString().split('T')[0];
+        const nextMonth = new Date();
+        nextMonth.setMonth(nextMonth.getMonth() + 3);
+        document.getElementById('sch-deadline').value = nextMonth.toISOString().split('T')[0];
+      }
+
+      document.getElementById('scheme-modal').classList.add('open');
+    };
+
+    window.confirmDeactivate = async function(id, title) {
+      if (!confirm(`Are you sure you want to deactivate scheme "${title}"? Students will no longer be able to apply.`)) {
+        return;
+      }
+      try {
+        await apiRequest(`/scholarships/${id}`, { method: 'DELETE' });
+        showToast('Scheme deactivated successfully.', 'info');
+        loadSchemes();
+      } catch (e) {}
+    };
+
+    document.getElementById('scheme-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('sch-id').value;
+      const payload = {
+        title: document.getElementById('sch-title').value.trim(),
+        provider: document.getElementById('sch-provider').value.trim(),
+        description: document.getElementById('sch-desc').value.trim(),
+        scholarship_type: document.getElementById('sch-type').value,
+        amount: parseFloat(document.getElementById('sch-amount').value),
+        application_start: document.getElementById('sch-start').value,
+        application_deadline: document.getElementById('sch-deadline').value,
+        education_level: document.getElementById('sch-edu').value.trim(),
+        course: document.getElementById('sch-course').value.trim(),
+        maximum_income: parseFloat(document.getElementById('sch-income').value),
+        minimum_percentage: parseFloat(document.getElementById('sch-score').value),
+        required_documents: document.getElementById('sch-docs').value.trim(),
+        official_url: document.getElementById('sch-url').value.trim(),
+        status: document.getElementById('sch-status').value,
+      };
+
+      const btn = document.getElementById('scheme-save-btn');
+      btn.disabled = true;
+      btn.innerText = 'Saving...';
+
+      try {
+        if (id) {
+          await apiRequest(`/scholarships/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(payload),
+          });
+          showToast('Scheme updated successfully!', 'success');
+        } else {
+          await apiRequest('/scholarships', {
+            method: 'POST',
+            body: JSON.stringify(payload),
+          });
+          showToast('New scholarship scheme published!', 'success');
+        }
+        closeSchemeModal();
+        loadSchemes();
+      } catch (err) {
+        btn.disabled = false;
+        btn.innerText = 'Save Scheme';
+      }
+    });
+
+    async function loadSchemes() {
+      if (!requireAuth(['admin', 'super_admin'])) return;
+
+      try {
+        const data = await apiRequest('/scholarships');
+        allSchemes = data.scholarships || [];
+
+        const tbody = document.getElementById('schemes-tbody');
+        if (allSchemes.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:24px;">No schemes created yet.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = allSchemes.map(s => `
+          <tr>
+            <td>#${s.id}</td>
+            <td><strong>${s.title}</strong></td>
+            <td><span class="scheme-type-tag">${s.scholarship_type}</span></td>
+            <td style="color:var(--secondary);font-weight:700;">${formatINR(s.amount)}</td>
+            <td>${formatDate(s.application_deadline)}</td>
+            <td>&le; ${formatINR(s.maximum_income)}</td>
+            <td><span class="badge ${s.status === 'active' ? 'badge-approved' : 'badge-rejected'}">${s.status}</span></td>
+            <td>
+              <div style="display:flex;gap:6px;">
+                <button class="btn btn-outline btn-sm" onclick="openSchemeModal(${s.id})">Edit</button>
+                <button class="btn btn-outline btn-sm" style="color:#dc2626;border-color:#fca5a5;" onclick="confirmDeactivate(${s.id}, '${s.title.replace(/'/g, "\\'")}')">Deactivate</button>
+              </div>
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        document.getElementById('schemes-tbody').innerHTML = '<tr><td colspan="8" style="text-align:center;color:#dc2626;padding:20px;">Unable to load schemes.</td></tr>';
+      }
+    }
+
+    // Auto open if ?action=add
+    if (new URLSearchParams(window.location.search).get('action') === 'add') {
+      setTimeout(() => openSchemeModal(), 300);
+    }
+
+    document.addEventListener('DOMContentLoaded', loadSchemes);
+  </script>
+</body>
+</html>

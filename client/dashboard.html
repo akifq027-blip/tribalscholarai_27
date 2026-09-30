@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Dashboard – TribalScholar AI</title>
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/components.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
+  <script src="/js/theme.js"></script>
+</head>
+<body>
+  <!-- Top Gov Bar with Theme Selector -->
+  <div class="gov-top-bar">
+    <div class="gov-top-content">
+      <div class="gov-emblem-text">
+        <span>🏛️</span>
+        <span>GOVERNMENT OF INDIA | MINISTRY OF TRIBAL AFFAIRS</span>
+      </div>
+      <div class="gov-top-controls">
+        <div class="theme-selector-wrap">
+          <label for="portal-theme" style="font-size:11px;font-weight:600;">Theme:</label>
+          <select id="portal-theme" class="theme-preview-selector" aria-label="Select Portal Design Theme">
+            <option value="gov">Gov Standard</option>
+            <option value="tribal">Tribal Heritage</option>
+            <option value="contrast">High Contrast (A11y)</option>
+          </select>
+        </div>
+        <span style="opacity:0.6;">|</span>
+        <span style="font-size:11px;">Direct Benefit Transfer (DBT) Portal</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="main-header">
+    <div class="nav-container">
+      <a href="/" class="brand-link">
+        <div class="brand-logo-badge">TS</div>
+        <div class="brand-info">
+          <h1>TribalScholar AI</h1>
+          <p>SCHEDULED TRIBE STUDENT PORTAL</p>
+        </div>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/dashboard.html" class="active">Dashboard</a></li>
+          <li><a href="/profile.html">My Profile</a></li>
+          <li><a href="/scholarships.html">Find Scholarships</a></li>
+          <li><a href="/applications.html">My Applications</a></li>
+          <li><a href="/notifications.html">Notifications</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-auth-buttons" id="nav-auth-container">
+        <!-- populated by auth.js -->
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container">
+    <!-- Welcome Header -->
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:24px;">
+      <div>
+        <h2 style="font-size:26px;color:var(--primary);" id="student-welcome-name">Hello, Scholar!</h2>
+        <p style="font-size:14px;color:var(--text-muted);">
+          Welcome to your Scheduled Tribe scholarship workspace. Here are your personalized recommendations and status updates.
+        </p>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <a href="/profile.html" class="btn btn-outline btn-sm">Edit Profile</a>
+        <a href="/scholarships.html" class="btn btn-primary btn-sm">Browse All Schemes</a>
+      </div>
+    </div>
+
+    <!-- Top Cards: Profile Completion & Upcoming Deadlines -->
+    <div class="dashboard-top-grid">
+      <!-- Profile Completion Card -->
+      <div class="card" style="display:flex;flex-direction:column;justify-content:space-between;">
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <h3 class="card-title">Your Profile Status</h3>
+            <span style="font-size:18px;font-weight:800;color:var(--primary);" id="profile-percent-text">0%</span>
+          </div>
+          <div class="progress-wrap" style="margin-bottom:14px;">
+            <div class="progress-bar" id="profile-progress-bar" style="width:0%;"></div>
+          </div>
+          <p style="font-size:13px;color:var(--text-muted);" id="profile-status-summary">
+            Loading profile information...
+          </p>
+        </div>
+        <div style="margin-top:16px;">
+          <a href="/profile.html" class="btn btn-secondary btn-sm" id="complete-profile-btn">
+            Complete your profile &rarr;
+          </a>
+        </div>
+      </div>
+
+      <!-- Upcoming Deadlines Card -->
+      <div class="card" style="display:flex;flex-direction:column;justify-content:space-between;">
+        <div>
+          <div class="card-header" style="margin-bottom:12px;padding-bottom:10px;">
+            <h3 class="card-title" style="display:flex;align-items:center;gap:6px;">
+              <span>⏳</span> Upcoming Deadlines
+            </h3>
+            <span style="font-size:12px;color:var(--text-muted);">Action Required</span>
+          </div>
+          <div id="upcoming-deadlines-list" style="display:flex;flex-direction:column;gap:10px;">
+            <div style="font-size:13px;color:var(--text-muted);">Checking upcoming dates...</div>
+          </div>
+        </div>
+        <div style="margin-top:12px;font-size:12px;color:var(--text-light);">
+          * Ensure required Tahsildar caste and income certificates are uploaded before scheme deadlines.
+        </div>
+      </div>
+    </div>
+
+    <!-- Recommended Scholarships (With AI Explanation & Match %) -->
+    <section style="margin-bottom:36px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <div>
+          <h3 style="font-size:20px;color:var(--primary);">Recommended Scholarships for You</h3>
+          <p style="font-size:13px;color:var(--text-muted);">
+            Ranked by deterministic eligibility engine matching your academic level, ST category, and income.
+          </p>
+        </div>
+        <a href="/scholarships.html" class="btn btn-outline btn-sm">Find More &rarr;</a>
+      </div>
+
+      <div class="scholarship-grid" id="recommended-scholarships-container">
+        <div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--text-muted);">
+          Calculating personalized recommendations...
+        </div>
+      </div>
+    </section>
+
+    <!-- Active Applications Section -->
+    <section class="card" style="margin-bottom:36px;">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title" style="display:flex;align-items:center;gap:8px;">
+            <span>📄</span> My Submitted Applications
+          </h3>
+          <p style="font-size:12px;color:var(--text-muted);margin-top:2px;">
+            Track the status of your scholarship applications through Institute & Department review
+          </p>
+        </div>
+        <a href="/applications.html" class="btn btn-outline btn-sm">View All Applications</a>
+      </div>
+
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Application ID</th>
+              <th>Scholarship Scheme</th>
+              <th>Submitted Date</th>
+              <th>Current Status</th>
+              <th>Disbursement / Action</th>
+            </tr>
+          </thead>
+          <tbody id="student-applications-tbody">
+            <tr>
+              <td colspan="5" style="text-align:center;padding:24px;color:var(--text-muted);">
+                Loading your applications...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- Official Footer -->
+  <footer class="main-footer">
+    <div class="footer-bottom">
+      &copy; 2026 Ministry of Tribal Affairs, Government of India. TribalScholar AI Portal.
+    </div>
+  </footer>
+
+  <script type="module" src="/js/api.js"></script>
+  <script type="module" src="/js/auth.js"></script>
+  <script type="module" src="/js/chat.js"></script>
+  <script type="module">
+    import { apiRequest, formatINR, formatDate, getDaysRemaining } from '/js/api.js';
+    import { requireAuth } from '/js/auth.js';
+
+    async function loadDashboard() {
+      if (!requireAuth(['student', 'admin', 'super_admin'])) return;
+
+      try {
+        const data = await apiRequest('/students/dashboard');
+        if (!data.success) return;
+
+        // 1. Student Name
+        document.getElementById('student-welcome-name').innerText = `Hello, ${data.student.full_name}!`;
+
+        // 2. Profile Completion
+        const completion = data.student.profileCompletion || 0;
+        document.getElementById('profile-percent-text').innerText = `${completion}%`;
+        document.getElementById('profile-progress-bar').style.width = `${completion}%`;
+
+        if (completion >= 90) {
+          document.getElementById('profile-status-summary').innerHTML = `
+            <span style="color:#15803d;font-weight:600;">✓ Profile Complete!</span> All required ST academic and domicile details are filled.
+          `;
+          document.getElementById('complete-profile-btn').innerText = 'Update Profile Details';
+        } else {
+          document.getElementById('profile-status-summary').innerHTML = `
+            Profile is <strong>${completion}% complete</strong>. Fill in education level, percentage, and district to unlock 100% accurate scholarship recommendations.
+          `;
+        }
+
+        // 3. Upcoming Deadlines
+        const deadContainer = document.getElementById('upcoming-deadlines-list');
+        if (data.upcomingDeadlines && data.upcomingDeadlines.length > 0) {
+          deadContainer.innerHTML = data.upcomingDeadlines.map(d => `
+            <div style="display:flex;justify-content:space-between;align-items:center;background:var(--bg-muted);padding:8px 12px;border-radius:var(--radius-sm);font-size:13px;">
+              <span style="font-weight:600;max-width:65%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${d.title}</span>
+              <span style="font-weight:700;color:${d.daysRemaining <= 15 ? '#dc2626' : '#b45309'};">
+                ${d.daysRemaining} days remaining
+              </span>
+            </div>
+          `).join('');
+        } else {
+          deadContainer.innerHTML = '<div style="font-size:13px;color:var(--text-muted);">No urgent deadlines right now.</div>';
+        }
+
+        // 4. Recommended Scholarships
+        const recContainer = document.getElementById('recommended-scholarships-container');
+        if (data.recommendedScholarships && data.recommendedScholarships.length > 0) {
+          recContainer.innerHTML = data.recommendedScholarships.map(s => {
+            const days = getDaysRemaining(s.application_deadline);
+            return `
+              <div class="scholarship-card">
+                <div class="scholarship-card-top">
+                  <span class="scheme-type-tag">${s.scholarship_type || 'General'}</span>
+                  <span class="match-badge ${s.matchPercentage >= 90 ? 'match-high' : s.matchPercentage >= 65 ? 'match-medium' : 'match-low'}">
+                    ${s.matchPercentage}% Match
+                  </span>
+                </div>
+                <h4 class="scholarship-card-title">${s.title}</h4>
+                <div class="scholarship-provider">🏛️ ${s.provider}</div>
+                <div class="scholarship-details-list">
+                  <div><div class="detail-item-label">Amount</div><div class="detail-item-val" style="color:var(--secondary);">${formatINR(s.amount)}</div></div>
+                  <div><div class="detail-item-label">Deadline</div><div class="detail-item-val">${formatDate(s.application_deadline)}</div></div>
+                  <div><div class="detail-item-label">Income Limit</div><div class="detail-item-val">&le; ${formatINR(s.maximum_income)}</div></div>
+                  <div><div class="detail-item-label">Status</div><div class="detail-item-val" style="color:#15803d;">Open</div></div>
+                </div>
+                <div class="scholarship-card-actions">
+                  <a href="/scholarship-details.html?id=${s.id}" class="btn btn-outline btn-sm" style="flex:1;">View Details</a>
+                  <a href="/scholarship-details.html?id=${s.id}&action=apply" class="btn btn-primary btn-sm" style="flex:1;">Apply Now</a>
+                </div>
+              </div>
+            `;
+          }).join('');
+        } else {
+          recContainer.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:24px;">No scholarships found. Complete your profile to get matches.</div>';
+        }
+
+        // 5. Applications Table
+        const appTbody = document.getElementById('student-applications-tbody');
+        if (data.applications && data.applications.length > 0) {
+          appTbody.innerHTML = data.applications.map(app => {
+            let statusBadgeClass = 'badge-submitted';
+            if (['DOCUMENT_VERIFICATION', 'INSTITUTE_VERIFICATION'].includes(app.status)) statusBadgeClass = 'badge-verification';
+            if (app.status === 'UNDER_REVIEW') statusBadgeClass = 'badge-review';
+            if (app.status === 'APPROVED') statusBadgeClass = 'badge-approved';
+            if (app.status === 'DISBURSED') statusBadgeClass = 'badge-disbursed';
+            if (app.status === 'REJECTED') statusBadgeClass = 'badge-rejected';
+
+            const title = app.scholarship_title || app.fellowship_title || 'Scholarship Scheme';
+
+            return `
+              <tr>
+                <td><strong>${app.application_number}</strong></td>
+                <td>${title}</td>
+                <td>${formatDate(app.submitted_at)}</td>
+                <td><span class="badge ${statusBadgeClass}">${app.status.replace(/_/g, ' ')}</span></td>
+                <td>
+                  <a href="/application-details.html?id=${app.id}" class="btn btn-outline btn-sm">
+                    Track Application &rarr;
+                  </a>
+                </td>
+              </tr>
+            `;
+          }).join('');
+        } else {
+          appTbody.innerHTML = `
+            <tr>
+              <td colspan="5" style="text-align:center;padding:30px;">
+                <div class="empty-state">
+                  <div class="empty-state-icon">📋</div>
+                  <h3>No applications yet</h3>
+                  <p>Once you apply for a scholarship, your application tracking and DBT status will appear here.</p>
+                  <a href="/scholarships.html" class="btn btn-primary btn-sm">Find Scholarships to Apply</a>
+                </div>
+              </td>
+            </tr>
+          `;
+        }
+      } catch (err) {
+        console.error('Failed to load dashboard:', err);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadDashboard);
+  </script>
+</body>
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manage Applications – TribalScholar AI</title>
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/components.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
+  <script src="/js/theme.js"></script>
+</head>
+<body>
+  <div class="gov-top-bar">
+    <div class="gov-top-content">
+      <div class="gov-emblem-text">
+        <span>🏛️</span>
+        <span>GOVERNMENT OF INDIA | MINISTRY OF TRIBAL AFFAIRS</span>
+      </div>
+      <div class="gov-top-controls">
+        <div class="theme-selector-wrap">
+          <label for="portal-theme" style="font-size:11px;font-weight:600;">Theme:</label>
+          <select id="portal-theme" class="theme-preview-selector" aria-label="Select Portal Design Theme">
+            <option value="gov">Gov Standard</option>
+            <option value="tribal">Tribal Heritage</option>
+            <option value="contrast">High Contrast (A11y)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <header class="main-header">
+    <div class="nav-container">
+      <a href="/" class="brand-link">
+        <div class="brand-logo-badge">TS</div>
+        <div class="brand-info">
+          <h1>TribalScholar AI</h1>
+          <p>DIRECTORATE APPLICATION PROCESSING</p>
+        </div>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/admin/dashboard.html">Overview</a></li>
+          <li><a href="/admin/scholarships.html">Manage Schemes</a></li>
+          <li><a href="/admin/applications.html" class="active">Applications</a></li>
+          <li><a href="/admin/students.html">Students</a></li>
+          <li><a href="/admin/analytics.html">Analytics</a></li>
+          <li><a href="/admin/audit-logs.html">Audit Logs</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-auth-buttons" id="nav-auth-container"></div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div style="margin-bottom:24px;">
+      <h2 style="font-size:24px;color:var(--primary);">Tribal Welfare Applications Management</h2>
+      <p style="font-size:14px;color:var(--text-muted);">
+        Review, verify, generate sanction orders, approve scholarships, or authorize DBT disbursements
+      </p>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="card" style="margin-bottom:24px;padding:16px;">
+      <div style="display:grid;grid-template-columns:2fr 1fr auto;gap:12px;">
+        <input type="text" id="app-search" class="form-control" placeholder="Search by student name, application number (TS2026-...), or scheme..." oninput="filterApps()" />
+        <select id="app-status-filter" class="form-select" onchange="filterApps()">
+          <option value="all">All Application Statuses</option>
+          <option value="SUBMITTED">SUBMITTED</option>
+          <option value="DOCUMENT_VERIFICATION">DOCUMENT VERIFICATION</option>
+          <option value="INSTITUTE_VERIFICATION">INSTITUTE VERIFICATION</option>
+          <option value="UNDER_REVIEW">UNDER REVIEW</option>
+          <option value="APPROVED">APPROVED</option>
+          <option value="DISBURSEMENT_PENDING">DISBURSEMENT PENDING</option>
+          <option value="DISBURSED">DISBURSED (DBT)</option>
+          <option value="REJECTED">REJECTED</option>
+        </select>
+        <button class="btn btn-outline" onclick="resetAppFilter()">Reset</button>
+      </div>
+    </div>
+
+    <!-- Applications Table -->
+    <div class="card">
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>App Number</th>
+              <th>Applicant</th>
+              <th>Category & State</th>
+              <th>Scheme Title</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="admin-apps-tbody">
+            <tr>
+              <td colspan="7" style="text-align:center;padding:24px;color:var(--text-muted);">
+                Loading all applications...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- Status Transition Modal -->
+  <div class="modal-overlay" id="status-modal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">Update Application Status</h3>
+        <button class="modal-close-btn" onclick="closeStatusModal()">&times;</button>
+      </div>
+      <form id="status-update-form">
+        <input type="hidden" id="modal-app-id" />
+        <div class="modal-body">
+          <div style="background:var(--bg-muted);padding:12px;border-radius:var(--radius-sm);margin-bottom:16px;" id="modal-app-info">
+            <!-- Populated via JS -->
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="modal-status-select">Select New Status <span class="required">*</span></label>
+            <select id="modal-status-select" class="form-select" required onchange="handleModalStatusChange()">
+              <option value="DOCUMENT_VERIFICATION">DOCUMENT VERIFICATION</option>
+              <option value="INSTITUTE_VERIFICATION">INSTITUTE VERIFICATION</option>
+              <option value="UNDER_REVIEW">UNDER REVIEW (DEPARTMENT)</option>
+              <option value="APPROVED">APPROVED (SANCTION ORDER)</option>
+              <option value="DISBURSEMENT_PENDING">DISBURSEMENT PENDING</option>
+              <option value="DISBURSED">DISBURSED (DBT PAID)</option>
+              <option value="REJECTED">REJECTED</option>
+            </select>
+          </div>
+
+          <div class="form-group" id="rejection-box" style="display:none;">
+            <label class="form-label" for="modal-rejection-reason">Rejection Reason <span class="required">*</span></label>
+            <textarea id="modal-rejection-reason" class="form-control" rows="2" placeholder="Specify statutory or document reason for rejection"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="modal-remarks">Officer Remarks / Audit Note</label>
+            <textarea id="modal-remarks" class="form-control" rows="3" placeholder="Enter remarks recorded in public audit trail"></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeStatusModal()">Cancel</button>
+          <button type="submit" id="status-submit-btn" class="btn btn-primary">Save Status Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer class="main-footer">
+    <div class="footer-bottom">
+      &copy; 2026 Ministry of Tribal Affairs, Government of India. TribalScholar AI Console.
+    </div>
+  </footer>
+
+  <script type="module" src="/js/api.js"></script>
+  <script type="module" src="/js/auth.js"></script>
+  <script type="module">
+    import { apiRequest, showToast, formatINR } from '/js/api.js';
+    import { requireAuth } from '/js/auth.js';
+
+    let allApps = [];
+
+    window.closeStatusModal = function() {
+      document.getElementById('status-modal').classList.remove('open');
+    };
+
+    window.handleModalStatusChange = function() {
+      const st = document.getElementById('modal-status-select').value;
+      document.getElementById('rejection-box').style.display = st === 'REJECTED' ? 'block' : 'none';
+    };
+
+    window.openStatusModal = function(id) {
+      const app = allApps.find(a => a.id === id);
+      if (!app) return;
+
+      document.getElementById('modal-app-id').value = app.id;
+      document.getElementById('modal-app-info').innerHTML = `
+        <div style="font-size:13px;line-height:1.5;">
+          <div><strong>Application:</strong> ${app.application_number}</div>
+          <div><strong>Applicant:</strong> ${app.student_name} (${app.category || 'ST'})</div>
+          <div><strong>Scheme:</strong> ${app.scholarship_title || 'Scholarship Scheme'}</div>
+          <div><strong>Current Status:</strong> <span class="badge badge-submitted">${app.status}</span></div>
+        </div>
+      `;
+
+      document.getElementById('modal-status-select').value = app.status;
+      handleModalStatusChange();
+      document.getElementById('modal-remarks').value = app.remarks || '';
+      document.getElementById('status-modal').classList.add('open');
+    };
+
+    document.getElementById('status-update-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('modal-app-id').value;
+      const status = document.getElementById('modal-status-select').value;
+      const remarks = document.getElementById('modal-remarks').value.trim();
+      const rejection_reason = document.getElementById('modal-rejection-reason').value.trim();
+      const btn = document.getElementById('status-submit-btn');
+
+      btn.disabled = true;
+      btn.innerText = 'Updating...';
+
+      try {
+        await apiRequest(`/applications/${id}/status`, {
+          method: 'PUT',
+          body: JSON.stringify({ status, remarks, rejection_reason }),
+        });
+        showToast(`Application updated to ${status}!`, 'success');
+        closeStatusModal();
+        loadAllApplications();
+      } catch (err) {
+        btn.disabled = false;
+        btn.innerText = 'Save Status Update';
+      }
+    });
+
+    window.filterApps = function() {
+      const q = document.getElementById('app-search').value.toLowerCase();
+      const st = document.getElementById('app-status-filter').value;
+      const filtered = allApps.filter(a => {
+        const matchesQ = !q || a.student_name.toLowerCase().includes(q) || a.application_number.toLowerCase().includes(q) || (a.scholarship_title && a.scholarship_title.toLowerCase().includes(q));
+        const matchesSt = st === 'all' || a.status === st;
+        return matchesQ && matchesSt;
+      });
+      renderApps(filtered);
+    };
+
+    window.resetAppFilter = function() {
+      document.getElementById('app-search').value = '';
+      document.getElementById('app-status-filter').value = 'all';
+      renderApps(allApps);
+    };
+
+    function renderApps(apps) {
+      const tbody = document.getElementById('admin-apps-tbody');
+      if (apps.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text-muted);">No applications match filter.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = apps.map(a => {
+        let badgeClass = 'badge-submitted';
+        if (['DOCUMENT_VERIFICATION', 'INSTITUTE_VERIFICATION'].includes(a.status)) badgeClass = 'badge-verification';
+        if (a.status === 'UNDER_REVIEW') badgeClass = 'badge-review';
+        if (a.status === 'APPROVED') badgeClass = 'badge-approved';
+        if (a.status === 'DISBURSED') badgeClass = 'badge-disbursed';
+        if (a.status === 'REJECTED') badgeClass = 'badge-rejected';
+
+        return `
+          <tr>
+            <td><strong>${a.application_number}</strong></td>
+            <td>
+              <div><strong>${a.student_name}</strong></div>
+              <small style="color:var(--text-muted);">${a.student_email}</small>
+            </td>
+            <td>
+              <div>${a.category || 'ST'}</div>
+              <small style="color:var(--text-muted);">${a.state || 'India'}</small>
+            </td>
+            <td>${a.scholarship_title || 'Scholarship Scheme'}</td>
+            <td style="color:var(--secondary);font-weight:700;">${formatINR(a.scholarship_amount)}</td>
+            <td><span class="badge ${badgeClass}">${a.status.replace(/_/g, ' ')}</span></td>
+            <td>
+              <div style="display:flex;gap:6px;">
+                <button class="btn btn-primary btn-sm" onclick="openStatusModal(${a.id})">
+                  Update Status
+                </button>
+                <a href="/application-details.html?id=${a.id}" class="btn btn-outline btn-sm">
+                  Inspect
+                </a>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function loadAllApplications() {
+      if (!requireAuth(['admin', 'super_admin'])) return;
+
+      try {
+        const data = await apiRequest('/admin/applications');
+        allApps = data.applications || [];
+        renderApps(allApps);
+      } catch (err) {
+        document.getElementById('admin-apps-tbody').innerHTML = '<tr><td colspan="7" style="text-align:center;color:#dc2626;padding:20px;">Unable to load applications.</td></tr>';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadAllApplications);
+  </script>
+</body>
+</html>

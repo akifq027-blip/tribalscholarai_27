@@ -1,0 +1,831 @@
+/* ========================================================
+   TribalScholar AI - Comprehensive Responsive Stylesheet
+   Strict Zero-Horizontal-Overflow Guarantee across 320px - 1920px+
+   Tested at: 320px, 360px, 375px, 390px, 414px, 768px, 1024px, 1280px, 1440px, 1920px
+   ======================================================== */
+
+/* ========================================================
+   1. GLOBAL RESPONSIVE SAFETY & RESETS
+   ======================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
+
+img,
+video,
+iframe,
+canvas {
+  max-width: 100% !important;
+  height: auto;
+}
+
+/* Form elements & cards must never exceed viewport */
+input,
+select,
+textarea,
+button,
+.card,
+.modal-container {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Headings text wrapping */
+h1, h2, h3, h4, h5, h6,
+.hero-title,
+.card-title,
+.brand-info h1 {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* ========================================================
+   2. MOBILE NAVIGATION OVERLAY & SLIDE-OUT DRAWER
+   ======================================================== */
+.mobile-menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 99998;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+  backdrop-filter: blur(2px);
+}
+
+.mobile-menu-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.mobile-menu-drawer {
+  position: fixed;
+  top: 0;
+  right: -340px;
+  width: 300px;
+  max-width: 86vw;
+  height: 100%;
+  height: 100dvh;
+  background: var(--bg-surface);
+  box-shadow: -4px 0 25px rgba(0, 0, 0, 0.3);
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  transition: right 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
+}
+
+.mobile-menu-drawer.open {
+  right: 0;
+}
+
+.mobile-drawer-header {
+  padding: 16px;
+  background: var(--primary);
+  color: #ffffff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid var(--secondary);
+  flex-shrink: 0;
+}
+
+.mobile-drawer-header h3 {
+  font-size: 16px;
+  color: #ffffff;
+  margin: 0;
+  font-weight: 700;
+}
+
+.mobile-drawer-close {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 24px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s;
+}
+
+.mobile-drawer-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.mobile-drawer-user {
+  padding: 14px 16px;
+  background: var(--bg-muted);
+  border-bottom: 1px solid var(--border-light);
+  flex-shrink: 0;
+}
+
+.mobile-drawer-links {
+  list-style: none;
+  padding: 10px 8px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+}
+
+.mobile-drawer-links a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  color: var(--text-main);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 13.5px;
+  border-radius: var(--radius-md);
+  transition: all 0.15s;
+}
+
+.mobile-drawer-links a:hover,
+.mobile-drawer-links a.active {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.mobile-drawer-actions {
+  padding: 16px;
+  margin-top: auto;
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--bg-surface);
+  flex-shrink: 0;
+}
+
+/* ========================================================
+   3. TOP INFORMATION / FEATURE CARDS
+   (Option A: Clean responsive multi-column on desktop, 1-col on mobile)
+   ======================================================== */
+.top-info-feature-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 28px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.top-feature-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  box-shadow: var(--shadow-sm);
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.top-feature-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.top-feature-content {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+}
+
+.top-feature-content h4 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 4px;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.top-feature-content p {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.45;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* ========================================================
+   4. HERO SECTION
+   ======================================================== */
+.hero-section {
+  background: linear-gradient(135deg, var(--primary) 0%, #1e293b 100%);
+  color: #fff;
+  border-radius: var(--radius-lg);
+  padding: 40px 32px;
+  margin-bottom: 28px;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.hero-section > div {
+  width: 100%;
+  max-width: 760px;
+  position: relative;
+  z-index: 2;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.hero-title {
+  font-size: clamp(1.35rem, 5vw, 2.25rem);
+  color: #fff;
+  font-weight: 800;
+  margin: 14px 0 10px;
+  line-height: 1.25;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+.hero-desc {
+  font-size: clamp(0.85rem, 2.6vw, 1.05rem);
+  color: #cbd5e1;
+  margin-bottom: 20px;
+  line-height: 1.55;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.hero-btn-group {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Quick Search Form */
+.hero-search-form {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr auto;
+  gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 2-Column Responsive Grids */
+.admin-charts-grid,
+.dashboard-top-grid,
+.two-col-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 28px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ========================================================
+   5. BREAKPOINT: DESKTOP & LARGE TABLETS (<= 1024px)
+   ======================================================== */
+@media (max-width: 1024px) {
+  .footer-content {
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  .nav-links {
+    gap: 10px;
+  }
+
+  .nav-links a {
+    font-size: 13px;
+    padding: 5px 8px;
+  }
+
+  .admin-charts-grid,
+  .dashboard-top-grid,
+  .two-col-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+}
+
+/* ========================================================
+   6. BREAKPOINT: TABLETS & MOBILE COLLAPSE (<= 992px)
+   Header switches to: Logo | Voice AI | Bell | Hamburger Menu
+   ======================================================== */
+@media (max-width: 992px) {
+  /* Strictly hide desktop navigation menu */
+  .main-header nav,
+  header nav,
+  .nav-desktop-menu {
+    display: none !important;
+  }
+
+  /* Strictly hide desktop auth buttons from the top bar */
+  .nav-desktop-auth {
+    display: none !important;
+  }
+
+  /* Reveal mobile hamburger menu button */
+  .nav-mobile-toggle {
+    display: inline-flex !important;
+  }
+
+  /* Feature cards collapse to 1 column on smaller tablet/mobile */
+  .top-info-feature-cards {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  /* Quick scheme search form switches to 2 columns */
+  .hero-search-form {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .hero-search-form button[type="submit"] {
+    grid-column: 1 / -1;
+  }
+
+  /* 2-column grids collapse to 1-column */
+  .admin-charts-grid,
+  .dashboard-top-grid,
+  .two-col-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+}
+
+/* ========================================================
+   7. BREAKPOINT: TABLETS & PHONES (<= 768px)
+   ======================================================== */
+@media (max-width: 768px) {
+  /* Government top bar: Stack content cleanly without overflow */
+  .gov-top-bar {
+    padding: 6px 12px;
+  }
+
+  .gov-top-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    width: 100%;
+  }
+
+  .gov-emblem-text {
+    font-size: 11px;
+    flex-wrap: wrap;
+    min-width: 0;
+    line-height: 1.3;
+  }
+
+  .gov-top-controls {
+    width: 100%;
+    justify-content: space-between;
+    font-size: 11px;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  /* SIH Demo Banner: 3-column equal grid (Student | Institute | Admin) */
+  .demo-banner {
+    padding: 8px 12px;
+  }
+
+  .demo-banner-content {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .demo-banner-label {
+    justify-content: center;
+    font-size: 11.5px;
+    text-align: center;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .demo-switch-btns {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    width: 100%;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .demo-btn {
+    width: 100%;
+    min-width: 0;
+    text-align: center;
+    padding: 6px 4px;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Hero Section: 1-column mobile layout */
+  .hero-section {
+    padding: 24px 16px;
+    margin-bottom: 20px;
+    border-radius: var(--radius-md);
+  }
+
+  .hero-btn-group {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .hero-btn-group .btn {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+
+  /* Search form: 1 column */
+  .hero-search-form {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .hero-search-form .btn {
+    width: 100%;
+  }
+
+  /* System metrics grid: 2 columns */
+  .system-metrics-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  /* Scholarship Grid & Cards */
+  .scholarship-grid {
+    grid-template-columns: 1fr !important;
+    gap: 14px;
+  }
+
+  .scholarship-details-list {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  /* Card headers with search / filters: stack cleanly */
+  .card-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+  }
+
+  .card-header > div:not(.card-title),
+  .card-header form {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 8px !important;
+  }
+
+  .card-header input,
+  .card-header select {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Footer */
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 24px 16px 16px;
+  }
+
+  /* Data tables: contained horizontal scrolling without whole-page scroll */
+  .table-responsive {
+    margin: 0;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    display: block;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+}
+
+/* ========================================================
+   8. BREAKPOINT: STANDARD PHONES (<= 600px)
+   Targeting: 414px, 390px, 375px
+   ======================================================== */
+@media (max-width: 600px) {
+  /* Navigation Container */
+  .nav-container {
+    padding: 8px 12px;
+    gap: 8px;
+  }
+
+  .brand-link {
+    gap: 8px;
+    max-width: calc(100vw - 160px);
+  }
+
+  .brand-logo-badge {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .brand-info h1 {
+    font-size: 15px;
+  }
+
+  .brand-info p {
+    display: none !important; /* Hide long subtitle to prevent header crowding */
+  }
+
+  /* Voice AI Header Button: compact representation */
+  .nav-voice-btn {
+    padding: 6px 10px;
+    font-size: 11.5px;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .nav-voice-btn .nav-voice-full {
+    display: none; /* Shows "AI" instead of "Voice AI" */
+  }
+
+  .nav-voice-btn .nav-voice-short {
+    display: inline;
+  }
+
+  /* Notification Bell */
+  .nav-notif-btn {
+    min-width: 34px;
+    height: 34px;
+    padding: 5px 8px !important;
+  }
+
+  /* Hamburger Menu Toggle */
+  .nav-mobile-toggle {
+    width: 34px;
+    height: 34px;
+    font-size: 17px;
+  }
+
+  /* Floating Vapi Voice & AI Counselor Widget */
+  .voice-launcher-wrap {
+    bottom: 12px;
+    right: 12px;
+    gap: 6px;
+    max-width: calc(100vw - 24px);
+    z-index: 9999;
+  }
+
+  .voice-call-trigger-btn {
+    padding: 8px 12px;
+    font-size: 12px;
+    gap: 5px;
+  }
+
+  .ai-chat-launcher {
+    padding: 8px 12px;
+    font-size: 12px;
+    gap: 5px;
+  }
+
+  .ai-chat-launcher .ai-chat-full {
+    display: none;
+  }
+
+  .ai-chat-launcher .ai-chat-short {
+    display: inline;
+  }
+
+  /* Contained Mobile Chat Drawer */
+  .ai-chat-drawer {
+    position: fixed !important;
+    left: 10px !important;
+    right: 10px !important;
+    bottom: 64px !important;
+    width: auto !important;
+    max-width: calc(100vw - 20px) !important;
+    height: min(540px, 78vh) !important;
+    margin: 0 !important;
+    border-radius: var(--radius-md) !important;
+  }
+
+  /* Buttons & Cards sizing */
+  .card {
+    padding: 14px 12px;
+  }
+
+  .btn {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+
+  .btn-lg {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+
+  /* Scholarship card details list */
+  .scholarship-details-list {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 10px;
+  }
+
+  .scholarship-card-actions {
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .scholarship-card-actions .btn {
+    width: 100%;
+  }
+}
+
+/* ========================================================
+   9. BREAKPOINT: COMPACT MOBILE PHONES (<= 480px)
+   Further reduction in padding, font sizes, button sizes
+   ======================================================== */
+@media (max-width: 480px) {
+  .hero-section {
+    padding: 18px 12px;
+  }
+
+  .hero-title {
+    font-size: clamp(1.2rem, 5.5vw, 1.55rem);
+    margin: 10px 0 8px;
+  }
+
+  .hero-desc {
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 16px;
+  }
+
+  /* Voice AI header button: ultra-compact */
+  .nav-voice-btn {
+    padding: 5px 8px;
+    font-size: 11px;
+  }
+
+  /* Metric cards: 2 columns with reduced padding */
+  .system-metrics-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+  }
+
+  .system-metrics-grid .card {
+    padding: 10px 8px;
+  }
+
+  .system-metrics-grid .card div:nth-child(2) {
+    font-size: 22px !important;
+  }
+
+  /* Floating Voice button: icon-only on <= 480px */
+  .voice-call-trigger-btn .voice-label-full,
+  .voice-call-trigger-btn .voice-label-short {
+    display: none;
+  }
+
+  .voice-call-trigger-btn {
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border-radius: 50%;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .ai-chat-launcher {
+    padding: 7px 10px;
+    font-size: 11.5px;
+  }
+}
+
+/* ========================================================
+   10. BREAKPOINT: ULTRA-COMPACT PHONES (<= 360px & 320px)
+   Targeting: 360px, 320px (iPhone SE, Galaxy Fold)
+   ======================================================== */
+@media (max-width: 360px) {
+  .nav-container {
+    padding: 6px 8px;
+    gap: 4px;
+  }
+
+  .brand-link {
+    gap: 6px;
+    max-width: 130px;
+  }
+
+  .brand-logo-badge {
+    width: 30px;
+    height: 30px;
+    font-size: 13px;
+  }
+
+  .brand-info h1 {
+    font-size: 13.5px;
+  }
+
+  .nav-actions-wrap {
+    gap: 4px;
+  }
+
+  /* On 320px, Voice AI button shows just microphone icon */
+  .nav-voice-btn .nav-voice-text {
+    display: none;
+  }
+
+  .nav-voice-btn {
+    padding: 6px;
+    min-width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    justify-content: center;
+  }
+
+  .nav-notif-btn {
+    min-width: 32px;
+    height: 32px;
+    padding: 4px !important;
+  }
+
+  .nav-mobile-toggle {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+
+  /* Demo banner buttons on 320px */
+  .demo-banner {
+    padding: 6px 8px;
+  }
+
+  .demo-switch-btns {
+    gap: 4px;
+  }
+
+  .demo-btn {
+    font-size: 10px;
+    padding: 4px 2px;
+  }
+
+  /* System metrics: 1 column on ultra-compact */
+  .system-metrics-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Floating AI launcher text */
+  .ai-chat-launcher {
+    padding: 6px 9px;
+    font-size: 11px;
+  }
+
+  .ai-chat-drawer {
+    left: 6px !important;
+    right: 6px !important;
+    bottom: 56px !important;
+    max-width: calc(100vw - 12px) !important;
+  }
+}

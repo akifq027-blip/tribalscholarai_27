@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Find Scholarships & Fellowships – TribalScholar AI</title>
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/components.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
+  <script src="/js/theme.js"></script>
+</head>
+<body>
+  <!-- Top Gov Bar -->
+  <div class="gov-top-bar">
+    <div class="gov-top-content">
+      <div class="gov-emblem-text">
+        <span>🏛️</span>
+        <span>GOVERNMENT OF INDIA | MINISTRY OF TRIBAL AFFAIRS</span>
+      </div>
+      <div class="gov-top-controls">
+        <div class="theme-selector-wrap">
+          <label for="portal-theme" style="font-size:11px;font-weight:600;">Theme:</label>
+          <select id="portal-theme" class="theme-preview-selector" aria-label="Select Portal Design Theme">
+            <option value="gov">Gov Standard</option>
+            <option value="tribal">Tribal Heritage</option>
+            <option value="contrast">High Contrast (A11y)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <header class="main-header">
+    <div class="nav-container">
+      <a href="/" class="brand-link">
+        <div class="brand-logo-badge">TS</div>
+        <div class="brand-info">
+          <h1>TribalScholar AI</h1>
+          <p>FIND SCHOLARSHIPS & FELLOWSHIPS</p>
+        </div>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/">Home</a></li>
+          <li><a href="/scholarships.html" class="active">Find Scholarships</a></li>
+          <li><a href="/dashboard.html">Student Portal</a></li>
+          <li><a href="/applications.html">My Applications</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-auth-buttons" id="nav-auth-container"></div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div style="margin-bottom:24px;">
+      <h2 style="font-size:26px;color:var(--primary);">Explore Scheduled Tribe Schemes</h2>
+      <p style="font-size:14px;color:var(--text-muted);">
+        Verified financial schemes funded by Ministry of Tribal Affairs & State Tribal Welfare Directorates.
+      </p>
+    </div>
+
+    <!-- Filter & Search Toolbar -->
+    <div class="card" style="margin-bottom:28px;padding:20px;">
+      <form id="filter-form" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:12px;">
+        <div class="form-group" style="margin-bottom:0;grid-column:1/-1;">
+          <label class="form-label" for="search-input">Search Schemes</label>
+          <input type="text" id="search-input" class="form-control" placeholder="Search by scheme name, provider, course (B.Tech, MBBS, etc.)..." />
+        </div>
+
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label" for="filter-type">Scholarship Type</label>
+          <select id="filter-type" class="form-select">
+            <option value="all">All Types</option>
+            <option value="Higher-Education">Higher Education</option>
+            <option value="Post-Matric">Post-Matric</option>
+            <option value="Merit-Based">Merit-Based</option>
+            <option value="Overseas">Overseas</option>
+            <option value="Pre-Matric">Pre-Matric</option>
+            <option value="Special-Incentive">Special Girls STEM</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label" for="filter-education">Education Level</label>
+          <select id="filter-education" class="form-select">
+            <option value="all">All Levels</option>
+            <option value="Undergraduate">Undergraduate</option>
+            <option value="Postgraduate">Postgraduate</option>
+            <option value="Secondary">Secondary (Class 9-10)</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label" for="filter-income">Maximum Income</label>
+          <select id="filter-income" class="form-select">
+            <option value="">Any Income Ceiling</option>
+            <option value="250000">Up to ₹2.5 Lakh</option>
+            <option value="600000">Up to ₹6.0 Lakh</option>
+            <option value="800000">Up to ₹8.0 Lakh</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label" for="filter-sort">Sort By</label>
+          <select id="filter-sort" class="form-select">
+            <option value="relevance">Relevance / Match %</option>
+            <option value="deadline">Approaching Deadline</option>
+            <option value="amount_high">Highest Amount</option>
+            <option value="newest">Recently Added</option>
+          </select>
+        </div>
+
+        <div style="display:flex;align-items:flex-end;gap:8px;">
+          <button type="submit" class="btn btn-primary" style="flex:1;">Apply Filters</button>
+          <button type="button" class="btn btn-outline" onclick="resetFilters()">Reset</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Active Count & Legend -->
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
+      <div style="font-size:14px;color:var(--text-muted);">
+        Showing <strong id="results-count">0</strong> available schemes
+      </div>
+      <div style="display:flex;gap:12px;font-size:12px;align-items:center;">
+        <span style="display:flex;align-items:center;gap:4px;"><span class="badge badge-approved" style="font-size:10px;">Eligible</span> 90%+ Match</span>
+        <span style="display:flex;align-items:center;gap:4px;"><span class="badge badge-verification" style="font-size:10px;">Almost Eligible</span> 65%-89%</span>
+        <span style="display:flex;align-items:center;gap:4px;"><span class="badge badge-rejected" style="font-size:10px;">Not Eligible</span> &lt;65%</span>
+      </div>
+    </div>
+
+    <!-- Scholarships Grid -->
+    <div class="scholarship-grid" id="discovery-grid">
+      <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted);">
+        Loading scholarship database...
+      </div>
+    </div>
+  </main>
+
+  <footer class="main-footer">
+    <div class="footer-bottom">
+      &copy; 2026 Ministry of Tribal Affairs, Government of India. TribalScholar AI.
+    </div>
+  </footer>
+
+  <script type="module" src="/js/api.js"></script>
+  <script type="module" src="/js/auth.js"></script>
+  <script type="module" src="/js/chat.js"></script>
+  <script type="module">
+    import { apiRequest, formatINR, formatDate, getDaysRemaining } from '/js/api.js';
+
+    // Parse URL params
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('search')) document.getElementById('search-input').value = urlParams.get('search');
+    if (urlParams.get('scholarship_type')) document.getElementById('filter-type').value = urlParams.get('scholarship_type');
+    if (urlParams.get('education_level')) document.getElementById('filter-education').value = urlParams.get('education_level');
+
+    window.resetFilters = function() {
+      document.getElementById('filter-form').reset();
+      loadScholarships();
+    };
+
+    document.getElementById('filter-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      loadScholarships();
+    });
+
+    async function loadScholarships() {
+      const container = document.getElementById('discovery-grid');
+      const search = document.getElementById('search-input').value.trim();
+      const type = document.getElementById('filter-type').value;
+      const edu = document.getElementById('filter-education').value;
+      const income = document.getElementById('filter-income').value;
+      const sort = document.getElementById('filter-sort').value;
+
+      container.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:30px;">Searching verified schemes...</div>';
+
+      try {
+        let q = `/scholarships?sort_by=${encodeURIComponent(sort)}`;
+        if (search) q += `&search=${encodeURIComponent(search)}`;
+        if (type !== 'all') q += `&scholarship_type=${encodeURIComponent(type)}`;
+        if (edu !== 'all') q += `&education_level=${encodeURIComponent(edu)}`;
+        if (income) q += `&max_income=${encodeURIComponent(income)}`;
+
+        const data = await apiRequest(q, { silent: true });
+        const list = data.scholarships || [];
+
+        document.getElementById('results-count').innerText = list.length;
+
+        if (list.length === 0) {
+          container.innerHTML = `
+            <div style="grid-column:1/-1;">
+              <div class="empty-state">
+                <div class="empty-state-icon">🔍</div>
+                <h3>No schemes match your exact filter criteria</h3>
+                <p>Try resetting filters or expanding your income/education range.</p>
+                <button class="btn btn-outline btn-sm" onclick="resetFilters()">Reset All Filters</button>
+              </div>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = list.map(s => {
+          const days = getDaysRemaining(s.application_deadline);
+          const deadlineSoon = days <= 30 && days > 0;
+
+          // Status Badge
+          let eligibilityBadge = '';
+          if (s.eligibility) {
+            const match = s.eligibility.matchPercentage;
+            if (match >= 90) {
+              eligibilityBadge = `<span class="badge badge-approved" style="font-size:11px;">Eligible (${match}%)</span>`;
+            } else if (match >= 65) {
+              eligibilityBadge = `<span class="badge badge-verification" style="font-size:11px;">Almost Eligible (${match}%)</span>`;
+            } else {
+              eligibilityBadge = `<span class="badge badge-rejected" style="font-size:11px;">Not Eligible (${match}%)</span>`;
+            }
+          }
+
+          return `
+            <div class="scholarship-card">
+              <div class="scholarship-card-top">
+                <span class="scheme-type-tag">${s.scholarship_type}</span>
+                <div style="display:flex;gap:6px;align-items:center;">
+                  ${deadlineSoon ? '<span class="badge badge-rejected" style="font-size:10px;">Deadline Soon</span>' : ''}
+                  ${eligibilityBadge}
+                </div>
+              </div>
+
+              <h3 class="scholarship-card-title">${s.title}</h3>
+              <div class="scholarship-provider">🏛️ ${s.provider}</div>
+              <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
+                ${s.description}
+              </p>
+
+              <div class="scholarship-details-list">
+                <div>
+                  <div class="detail-item-label">Amount / Stipend</div>
+                  <div class="detail-item-val" style="color:var(--secondary);">${formatINR(s.amount)}/yr</div>
+                </div>
+                <div>
+                  <div class="detail-item-label">Application Deadline</div>
+                  <div class="detail-item-val" style="${deadlineSoon ? 'color:#dc2626;' : ''}">
+                    ${formatDate(s.application_deadline)}
+                  </div>
+                </div>
+                <div>
+                  <div class="detail-item-label">Max Family Income</div>
+                  <div class="detail-item-val">&le; ${formatINR(s.maximum_income)}</div>
+                </div>
+                <div>
+                  <div class="detail-item-label">Min Academic Score</div>
+                  <div class="detail-item-val">&ge; ${s.minimum_percentage}%</div>
+                </div>
+              </div>
+
+              <div class="scholarship-card-actions">
+                <a href="/scholarship-details.html?id=${s.id}" class="btn btn-outline btn-sm" style="flex:1;">
+                  View Eligibility Details
+                </a>
+                <a href="/scholarship-details.html?id=${s.id}&action=apply" class="btn btn-primary btn-sm" style="flex:1;">
+                  Apply Now
+                </a>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (err) {
+        container.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:30px;color:#dc2626;">Error retrieving scholarship list.</div>';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadScholarships);
+  </script>
+</body>
+</html>

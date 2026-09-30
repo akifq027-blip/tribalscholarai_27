@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Applications – TribalScholar AI</title>
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/components.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
+  <script src="/js/theme.js"></script>
+</head>
+<body>
+  <div class="gov-top-bar">
+    <div class="gov-top-content">
+      <div class="gov-emblem-text">
+        <span>🏛️</span>
+        <span>GOVERNMENT OF INDIA | MINISTRY OF TRIBAL AFFAIRS</span>
+      </div>
+      <div class="gov-top-controls">
+        <div class="theme-selector-wrap">
+          <label for="portal-theme" style="font-size:11px;font-weight:600;">Theme:</label>
+          <select id="portal-theme" class="theme-preview-selector" aria-label="Select Portal Design Theme">
+            <option value="gov">Gov Standard</option>
+            <option value="tribal">Tribal Heritage</option>
+            <option value="contrast">High Contrast (A11y)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <header class="main-header">
+    <div class="nav-container">
+      <a href="/" class="brand-link">
+        <div class="brand-logo-badge">TS</div>
+        <div class="brand-info">
+          <h1>TribalScholar AI</h1>
+          <p>MY APPLICATIONS TRACKER</p>
+        </div>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/dashboard.html">Dashboard</a></li>
+          <li><a href="/profile.html">My Profile</a></li>
+          <li><a href="/scholarships.html">Find Scholarships</a></li>
+          <li><a href="/applications.html" class="active">My Applications</a></li>
+          <li><a href="/notifications.html">Notifications</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-auth-buttons" id="nav-auth-container"></div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:24px;">
+      <div>
+        <h2 style="font-size:24px;color:var(--primary);">My Scholarship Applications</h2>
+        <p style="font-size:14px;color:var(--text-muted);">
+          Track application progress, upload missing certificates, and view disbursement status
+        </p>
+      </div>
+      <a href="/scholarships.html" class="btn btn-primary btn-sm">+ Apply for New Scheme</a>
+    </div>
+
+    <div class="card">
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Application ID</th>
+              <th>Scholarship / Fellowship</th>
+              <th>Grant Amount</th>
+              <th>Submission Date</th>
+              <th>Current Stage</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="applications-table-body">
+            <tr>
+              <td colspan="6" style="text-align:center;padding:30px;color:var(--text-muted);">
+                Loading your applications...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <footer class="main-footer">
+    <div class="footer-bottom">
+      &copy; 2026 Ministry of Tribal Affairs, Government of India. TribalScholar AI.
+    </div>
+  </footer>
+
+  <script type="module" src="/js/api.js"></script>
+  <script type="module" src="/js/auth.js"></script>
+  <script type="module" src="/js/chat.js"></script>
+  <script type="module">
+    import { apiRequest, formatINR, formatDate } from '/js/api.js';
+    import { requireAuth } from '/js/auth.js';
+
+    async function loadApplications() {
+      if (!requireAuth(['student', 'admin', 'super_admin'])) return;
+
+      const tbody = document.getElementById('applications-table-body');
+      try {
+        const data = await apiRequest('/applications/my');
+        if (!data.applications || data.applications.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="6" style="text-align:center;padding:40px;">
+                <div class="empty-state">
+                  <div class="empty-state-icon">📄</div>
+                  <h3>No applications yet</h3>
+                  <p>Explore verified central & state scholarships and submit your application online.</p>
+                  <a href="/scholarships.html" class="btn btn-primary btn-sm">Find Scholarships</a>
+                </div>
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        tbody.innerHTML = data.applications.map(a => {
+          let badgeClass = 'badge-submitted';
+          if (['DOCUMENT_VERIFICATION', 'INSTITUTE_VERIFICATION'].includes(a.status)) badgeClass = 'badge-verification';
+          if (a.status === 'UNDER_REVIEW') badgeClass = 'badge-review';
+          if (a.status === 'APPROVED') badgeClass = 'badge-approved';
+          if (a.status === 'DISBURSED') badgeClass = 'badge-disbursed';
+          if (a.status === 'REJECTED') badgeClass = 'badge-rejected';
+
+          const title = a.scholarship_title || a.fellowship_title || 'Scholarship Scheme';
+          const amt = a.scholarship_amount || a.fellowship_amount || 0;
+
+          return `
+            <tr>
+              <td><strong>${a.application_number}</strong></td>
+              <td>${title}</td>
+              <td style="color:var(--secondary);font-weight:700;">${formatINR(amt)}</td>
+              <td>${formatDate(a.submitted_at)}</td>
+              <td><span class="badge ${badgeClass}">${a.status.replace(/_/g, ' ')}</span></td>
+              <td>
+                <a href="/application-details.html?id=${a.id}" class="btn btn-outline btn-sm">
+                  Track & Manage &rarr;
+                </a>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      } catch (err) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#dc2626;padding:20px;">Unable to load applications.</td></tr>';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadApplications);
+  </script>
+</body>
+</html>

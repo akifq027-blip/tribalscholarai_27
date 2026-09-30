@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scheme Details & Application – TribalScholar AI</title>
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/components.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
+  <script src="/js/theme.js"></script>
+</head>
+<body>
+  <!-- Top Gov Bar -->
+  <div class="gov-top-bar">
+    <div class="gov-top-content">
+      <div class="gov-emblem-text">
+        <span>🏛️</span>
+        <span>GOVERNMENT OF INDIA | MINISTRY OF TRIBAL AFFAIRS</span>
+      </div>
+      <div class="gov-top-controls">
+        <div class="theme-selector-wrap">
+          <label for="portal-theme" style="font-size:11px;font-weight:600;">Theme:</label>
+          <select id="portal-theme" class="theme-preview-selector" aria-label="Select Portal Design Theme">
+            <option value="gov">Gov Standard</option>
+            <option value="tribal">Tribal Heritage</option>
+            <option value="contrast">High Contrast (A11y)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <header class="main-header">
+    <div class="nav-container">
+      <a href="/" class="brand-link">
+        <div class="brand-logo-badge">TS</div>
+        <div class="brand-info">
+          <h1>TribalScholar AI</h1>
+          <p>SCHOLARSHIP VERIFICATION & APPLICATION</p>
+        </div>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/">Home</a></li>
+          <li><a href="/scholarships.html">Find Scholarships</a></li>
+          <li><a href="/dashboard.html">Student Portal</a></li>
+          <li><a href="/applications.html">My Applications</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-auth-buttons" id="nav-auth-container"></div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="details-loading" style="text-align:center;padding:50px;color:var(--text-muted);">
+      Loading verified scheme details and computing eligibility...
+    </div>
+
+    <div id="details-content" style="display:none;max-width:960px;margin:0 auto;">
+      <!-- Breadcrumbs -->
+      <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">
+        <a href="/scholarships.html" style="color:var(--primary);text-decoration:none;">&larr; Back to Schemes Directory</a>
+      </div>
+
+      <!-- Scheme Header Card -->
+      <div class="card" style="margin-bottom:24px;border-top:4px solid var(--primary);">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:12px;">
+          <span class="scheme-type-tag" id="scheme-type-tag">Scholarship Type</span>
+          <div id="scheme-match-header"></div>
+        </div>
+        <h2 style="font-size:26px;color:var(--primary);margin-bottom:8px;" id="scheme-title">Loading...</h2>
+        <div style="font-size:14px;color:var(--text-muted);display:flex;align-items:center;gap:6px;margin-bottom:16px;">
+          <span>🏛️</span> <span id="scheme-provider">Provider</span>
+        </div>
+
+        <div class="scholarship-details-list" style="margin-bottom:20px;">
+          <div>
+            <div class="detail-item-label">Financial Grant / Year</div>
+            <div class="detail-item-val" style="color:var(--secondary);font-size:18px;" id="scheme-amount">₹0</div>
+          </div>
+          <div>
+            <div class="detail-item-label">Application Deadline</div>
+            <div class="detail-item-val" id="scheme-deadline">N/A</div>
+          </div>
+          <div>
+            <div class="detail-item-label">Target Education Level</div>
+            <div class="detail-item-val" id="scheme-education">Any</div>
+          </div>
+          <div>
+            <div class="detail-item-label">Family Income Ceiling</div>
+            <div class="detail-item-val" id="scheme-max-income">N/A</div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <button id="open-apply-wizard-btn" class="btn btn-primary btn-lg" onclick="openApplicationWizard()">
+            🚀 Apply for this Scholarship
+          </button>
+          <a id="scheme-official-url-btn" href="#" target="_blank" rel="noopener" class="btn btn-outline btn-lg">
+            🌐 Visit Official Scheme Website
+          </a>
+        </div>
+      </div>
+
+      <!-- Deterministic Eligibility Breakdown Card -->
+      <div class="card" style="margin-bottom:24px;background:#f8fafc;border:1px solid #e2e8f0;">
+        <div class="card-header">
+          <h3 class="card-title" style="display:flex;align-items:center;gap:8px;">
+            <span>⚖️</span> Statutory Eligibility Breakdown
+          </h3>
+          <div id="eligibility-status-badge"></div>
+        </div>
+
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;" id="eligibility-summary-text">
+          Evaluating student credentials against statutory criteria...
+        </p>
+
+        <div id="criteria-checklist" style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
+          <!-- Populated via JS -->
+        </div>
+
+        <!-- AI Explanation Layer -->
+        <div style="background:var(--bg-surface);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:16px;" id="ai-explanation-box">
+          <div style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--secondary);margin-bottom:8px;">
+            <span>✨</span> AI Counselor Analysis & Guidance
+          </div>
+          <div style="font-size:13px;line-height:1.6;color:var(--text-main);" id="ai-explanation-text">
+            Generating personalized assessment...
+          </div>
+        </div>
+      </div>
+
+      <!-- Full Description & Documents Card -->
+      <div class="card" style="margin-bottom:32px;">
+        <h3 class="card-title" style="margin-bottom:12px;">Detailed Scheme Description</h3>
+        <p style="font-size:14px;line-height:1.6;color:var(--text-main);margin-bottom:24px;" id="scheme-description">
+          Description content...
+        </p>
+
+        <h3 class="card-title" style="margin-bottom:12px;">Required Certifications & Documents</h3>
+        <ul style="padding-left:20px;font-size:14px;color:var(--text-main);line-height:1.7;" id="scheme-documents-list">
+          <!-- Populated via JS -->
+        </ul>
+      </div>
+    </div>
+  </main>
+
+  <!-- Application Wizard Modal -->
+  <div class="modal-overlay" id="application-wizard-modal">
+    <div class="modal-container" style="max-width:680px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Scholarship Application Form</h3>
+        <button class="modal-close-btn" onclick="closeApplicationWizard()">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Progress Steps -->
+        <div style="background:var(--bg-muted);padding:10px;border-radius:var(--radius-md);margin-bottom:16px;font-size:12px;font-weight:600;display:flex;justify-content:space-between;">
+          <span style="color:var(--primary);">1. Profile Review ✓</span>
+          <span style="color:var(--primary);">2. Eligibility ✓</span>
+          <span style="color:var(--primary);">3. Scheme Terms ✓</span>
+          <span style="color:var(--secondary);">4. Statutory Declaration</span>
+        </div>
+
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:var(--radius-md);padding:14px;margin-bottom:16px;">
+          <div style="font-weight:700;color:#166534;font-size:14px;margin-bottom:4px;" id="modal-scheme-name">Scheme Title</div>
+          <div style="font-size:12px;color:#166534;" id="modal-scheme-amount">Grant Amount</div>
+        </div>
+
+        <div style="margin-bottom:16px;font-size:13px;line-height:1.5;">
+          <h4 style="font-size:14px;margin-bottom:8px;">Applicant Summary:</h4>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;background:var(--bg-muted);padding:12px;border-radius:var(--radius-sm);" id="modal-student-summary">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <div style="margin-bottom:16px;font-size:13px;">
+          <h4 style="font-size:14px;margin-bottom:8px;">Next Steps After Submission:</h4>
+          <ol style="padding-left:18px;line-height:1.6;color:var(--text-muted);font-size:12px;">
+            <li>A unique tracking ID (e.g. <code>TS2026-000124</code>) will be generated.</li>
+            <li>You can upload your Tahsildar ST Caste, Income, and Bonafide certificates directly on your tracker page.</li>
+            <li>Your application will be routed to your institution nodal officer for verification.</li>
+          </ol>
+        </div>
+
+        <!-- Statutory Declaration -->
+        <div style="border-top:1px solid var(--border-light);padding-top:14px;">
+          <label style="display:flex;align-items:flex-start;gap:10px;font-size:13px;cursor:pointer;">
+            <input type="checkbox" id="declaration-checkbox" style="margin-top:3px;" />
+            <span>
+              <strong>Statutory Declaration:</strong> I hereby certify that the information entered in my profile is authentic and correct. I belong to the Scheduled Tribe community. I understand that submitting false declarations will result in cancellation of scholarship and recovery under Public Demands Recovery laws.
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="closeApplicationWizard()">Cancel</button>
+        <button type="button" class="btn btn-success" id="confirm-submit-btn" onclick="submitApplicationNow()">
+          ✓ Confirm & Submit Application
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="main-footer">
+    <div class="footer-bottom">
+      &copy; 2026 Ministry of Tribal Affairs, Government of India. TribalScholar AI Portal.
+    </div>
+  </footer>
+
+  <script type="module" src="/js/api.js"></script>
+  <script type="module" src="/js/auth.js"></script>
+  <script type="module" src="/js/chat.js"></script>
+  <script type="module">
+    import { apiRequest, showToast, formatINR, formatDate } from '/js/api.js';
+    import { isAuthenticated, getStoredUser } from '/js/auth.js';
+
+    let currentScholarship = null;
+    let currentEligibility = null;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const scholarshipId = urlParams.get('id');
+
+    window.openApplicationWizard = function() {
+      if (!isAuthenticated()) {
+        showToast('Please log in as a student to apply.', 'info');
+        setTimeout(() => {
+          window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+        }, 600);
+        return;
+      }
+
+      const user = getStoredUser();
+      if (user.role !== 'student') {
+        showToast('Only student accounts can submit scholarship applications.', 'error');
+        return;
+      }
+
+      document.getElementById('modal-scheme-name').innerText = currentScholarship.title;
+      document.getElementById('modal-scheme-amount').innerText = `Annual Benefit: ${formatINR(currentScholarship.amount)} | Provider: ${currentScholarship.provider}`;
+      document.getElementById('modal-student-summary').innerHTML = `
+        <div><strong>Applicant:</strong> ${user.full_name}</div>
+        <div><strong>Email:</strong> ${user.email}</div>
+        <div><strong>Category:</strong> Scheduled Tribe (ST)</div>
+        <div><strong>Status:</strong> Ready for Submission</div>
+      `;
+
+      document.getElementById('declaration-checkbox').checked = false;
+      document.getElementById('application-wizard-modal').classList.add('open');
+    };
+
+    window.closeApplicationWizard = function() {
+      document.getElementById('application-wizard-modal').classList.remove('open');
+    };
+
+    window.submitApplicationNow = async function() {
+      const agreed = document.getElementById('declaration-checkbox').checked;
+      if (!agreed) {
+        showToast('Please check the statutory declaration before submitting.', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('confirm-submit-btn');
+      btn.disabled = true;
+      btn.innerText = 'Submitting application...';
+
+      try {
+        const res = await apiRequest('/applications', {
+          method: 'POST',
+          body: JSON.stringify({
+            scholarship_id: scholarshipId,
+            declaration_accepted: true,
+          }),
+        });
+
+        if (res.success) {
+          showToast(`Application ${res.applicationNumber} submitted successfully!`, 'success');
+          closeApplicationWizard();
+          setTimeout(() => {
+            window.location.href = `/application-details.html?id=${res.applicationId}`;
+          }, 800);
+        }
+      } catch (err) {
+        btn.disabled = false;
+        btn.innerText = '✓ Confirm & Submit Application';
+      }
+    };
+
+    async function loadScholarshipDetails() {
+      if (!scholarshipId) {
+        window.location.href = '/scholarships.html';
+        return;
+      }
+
+      try {
+        const data = await apiRequest(`/scholarships/${scholarshipId}`);
+        currentScholarship = data.scholarship;
+        currentEligibility = data.eligibility;
+
+        document.getElementById('details-loading').style.display = 'none';
+        document.getElementById('details-content').style.display = 'block';
+
+        // Render scheme details
+        document.getElementById('scheme-title').innerText = currentScholarship.title;
+        document.getElementById('scheme-provider').innerText = currentScholarship.provider;
+        document.getElementById('scheme-type-tag').innerText = currentScholarship.scholarship_type;
+        document.getElementById('scheme-amount').innerText = `${formatINR(currentScholarship.amount)} / year`;
+        document.getElementById('scheme-deadline').innerText = formatDate(currentScholarship.application_deadline);
+        document.getElementById('scheme-education').innerText = currentScholarship.education_level || 'Any Degree / Course';
+        document.getElementById('scheme-max-income').innerText = `Up to ${formatINR(currentScholarship.maximum_income)}`;
+        document.getElementById('scheme-description').innerText = currentScholarship.description;
+
+        if (currentScholarship.official_url) {
+          const btn = document.getElementById('scheme-official-url-btn');
+          btn.href = currentScholarship.official_url;
+          btn.style.display = 'inline-flex';
+        } else {
+          document.getElementById('scheme-official-url-btn').style.display = 'none';
+        }
+
+        // Required Documents list
+        const docsList = document.getElementById('scheme-documents-list');
+        if (currentScholarship.required_documents) {
+          const items = currentScholarship.required_documents.split(',').map(d => d.trim());
+          docsList.innerHTML = items.map(doc => `
+            <li><strong>${doc}</strong> (Must be in PDF / JPG format under 5MB)</li>
+          `).join('');
+        } else {
+          docsList.innerHTML = '<li>ST Community Certificate, Tahsildar Income Certificate, Previous Year Marksheet, College Bonafide.</li>';
+        }
+
+        // Render Eligibility
+        if (currentEligibility) {
+          const match = currentEligibility.matchPercentage;
+          document.getElementById('scheme-match-header').innerHTML = `
+            <span class="match-badge ${match >= 90 ? 'match-high' : match >= 65 ? 'match-medium' : 'match-low'}" style="font-size:14px;padding:6px 14px;">
+              ${match}% Profile Match
+            </span>
+          `;
+
+          document.getElementById('eligibility-status-badge').innerHTML = currentEligibility.eligible
+            ? '<span class="badge badge-approved" style="font-size:12px;">All Conditions Met</span>'
+            : '<span class="badge badge-verification" style="font-size:12px;">Criteria Review Required</span>';
+
+          document.getElementById('eligibility-summary-text').innerText = currentEligibility.summary;
+
+          document.getElementById('criteria-checklist').innerHTML = currentEligibility.criteria.map(c => `
+            <div style="display:flex;align-items:flex-start;gap:10px;background:var(--bg-surface);padding:10px 14px;border-radius:var(--radius-sm);border:1px solid ${c.passed ? '#bbf7d0' : '#fecaca'};">
+              <span style="font-size:16px;">${c.passed ? '✅' : '❌'}</span>
+              <div>
+                <div style="font-weight:700;font-size:13px;color:${c.passed ? '#166534' : '#991b1b'};">${c.name}</div>
+                <div style="font-size:12px;color:var(--text-muted);">${c.detail}</div>
+              </div>
+            </div>
+          `).join('');
+        } else {
+          document.getElementById('criteria-checklist').innerHTML = `
+            <div style="background:var(--bg-surface);padding:14px;border-radius:var(--radius-sm);border:1px solid var(--border-color);">
+              <p style="font-size:13px;color:var(--text-muted);">
+                Log in as a Scheduled Tribe student to evaluate automated eligibility against your profile.
+              </p>
+              <a href="/login.html" class="btn btn-outline btn-sm" style="margin-top:8px;">Sign In to Check</a>
+            </div>
+          `;
+        }
+
+        // Render AI Explanation
+        if (data.aiExplanation) {
+          document.getElementById('ai-explanation-text').innerHTML = data.aiExplanation.replace(/\n/g, '<br/>');
+        } else {
+          document.getElementById('ai-explanation-box').style.display = 'none';
+        }
+
+        // Check if query had ?action=apply
+        if (urlParams.get('action') === 'apply') {
+          openApplicationWizard();
+        }
+      } catch (err) {
+        document.getElementById('details-loading').innerHTML = `
+          <div style="color:#dc2626;padding:30px;">
+            Unable to load scholarship details. Scheme may be inactive or expired.
+          </div>
+        `;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadScholarshipDetails);
+  </script>
+</body>
+</html>

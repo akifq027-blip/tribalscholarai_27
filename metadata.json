@@ -1,0 +1,9 @@
+{
+  "name": "TribalScholar AI",
+  "description": "AI-Enabled Scholarship and Fellowship Management System for Scheduled Tribes with real backend, MySQL database, and eligibility engine",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
+

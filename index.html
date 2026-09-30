@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TribalScholar AI</title>
+  <meta name="description" content="AI-Enabled Scholarship and Fellowship Management System for Scheduled Tribes with real backend, MySQL database, and eligibility engine" />
+  <meta property="og:title" content="TribalScholar AI" />
+  <meta property="og:description" content="AI-Enabled Scholarship and Fellowship Management System for Scheduled Tribes with real backend, MySQL database, and eligibility engine" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="stylesheet" href="/client/css/global.css" />
+  <link rel="stylesheet" href="/client/css/components.css" />
+  <link rel="stylesheet" href="/client/css/responsive.css" />
+  <script type="module" src="/client/js/theme.js"></script>
+</head>
+<body>
+  <!-- Top Gov Bar -->
+  <div class="gov-top-bar">
+    <div class="gov-top-content">
+      <div class="gov-emblem-text">
+        <span style="font-size:16px;">🏛️</span>
+        <span>GOVERNMENT OF INDIA | MINISTRY OF TRIBAL AFFAIRS</span>
+      </div>
+      <div class="gov-top-controls">
+        <div class="theme-selector-wrap">
+          <label for="portal-theme-root" style="font-size:11px;font-weight:600;">Theme:</label>
+          <select id="portal-theme-root" class="theme-preview-selector" aria-label="Select Portal Design Theme">
+            <option value="gov">Gov Standard</option>
+            <option value="tribal">Tribal Heritage</option>
+            <option value="contrast">High Contrast (A11y)</option>
+          </select>
+        </div>
+        <span style="opacity:0.6;">|</span>
+        <span style="font-size:11px;">Direct Benefit Transfer (DBT)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIH Demo Switcher Bar -->
+  <div class="demo-banner">
+    <div class="demo-banner-content">
+      <div class="demo-banner-label">
+        <span class="demo-badge">SIH Demo</span>
+        <span>One-Click Fast Demo Login:</span>
+      </div>
+      <div class="demo-switch-btns">
+        <button type="button" class="demo-btn" data-demo-role="student">👨‍🎓 Student</button>
+        <button type="button" class="demo-btn" data-demo-role="institute">🏫 Institute</button>
+        <button type="button" class="demo-btn" data-demo-role="admin">🏛️ Admin</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Navigation -->
+  <header class="main-header">
+    <div class="nav-container">
+      <a href="/" class="brand-link">
+        <div class="brand-logo-badge">TS</div>
+        <div class="brand-info">
+          <h1>TribalScholar AI</h1>
+          <p>SCHOLARSHIP & FELLOWSHIP PORTAL FOR SCHEDULED TRIBES</p>
+        </div>
+      </a>
+
+      <nav class="nav-desktop-menu">
+        <ul class="nav-links">
+          <li><a href="/" class="active">Home</a></li>
+          <li><a href="/scholarships.html">Find Scholarships</a></li>
+          <li><a href="/dashboard.html">Student Portal</a></li>
+          <li><a href="/institute/dashboard.html">Institute Portal</a></li>
+          <li><a href="/admin/dashboard.html">Admin Command</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions-wrap" id="nav-auth-container">
+        <button type="button" class="nav-voice-btn" id="nav-header-voice-btn" title="Talk to TribalScholar Voice AI (Vapi)">
+          <span class="nav-voice-icon">🎙️</span>
+          <span class="nav-voice-text"><span class="nav-voice-full">Voice </span>AI</span>
+        </button>
+        <a href="/notifications.html" title="Notifications" class="btn btn-outline btn-sm nav-notif-btn" id="nav-header-notif-btn" aria-label="Notifications">
+          <span>🔔</span>
+          <span id="nav-notif-count" class="nav-notif-badge" style="display:none;">0</span>
+        </a>
+        <div class="nav-desktop-auth">
+          <a href="/login.html" class="btn btn-outline btn-sm">Log In</a>
+          <a href="/register.html" class="btn btn-primary btn-sm">Register</a>
+        </div>
+        <button type="button" class="nav-mobile-toggle" id="nav-hamburger-toggle" aria-label="Open Navigation Menu" title="Open Navigation Menu">
+          ☰
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main class="container">
+    <section class="hero-section">
+      <div style="max-width:760px;">
+        <span style="background:var(--secondary);color:#fff;font-size:12px;font-weight:700;padding:4px 10px;border-radius:4px;text-transform:uppercase;">National Welfare Initiative</span>
+        <h2 class="hero-title">
+          TribalScholar AI – Scholarship & Fellowship Portal
+        </h2>
+        <p class="hero-desc">
+          Real full-stack platform for Scheduled Tribe students with deterministic eligibility verification, document OCR assistance, and multi-stage institutional workflow.
+        </p>
+        <div class="hero-btn-group">
+          <a href="/scholarships.html" class="btn btn-secondary btn-lg">Explore All Schemes</a>
+          <a href="/dashboard.html" class="btn btn-outline btn-lg" style="color:#fff;border-color:rgba(255,255,255,0.4);">Student Portal</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Top Information / Feature Cards Section -->
+    <section class="top-info-feature-cards">
+      <div class="top-feature-card">
+        <div class="top-feature-icon">🏛️</div>
+        <div class="top-feature-content">
+          <h4>Official National Portal</h4>
+          <p>Direct Benefit Transfer (DBT) enabled under Ministry of Tribal Affairs, Government of India.</p>
+        </div>
+      </div>
+      <div class="top-feature-card">
+        <div class="top-feature-icon">🌿</div>
+        <div class="top-feature-content">
+          <h4>Tribal Heritage & Modern EdTech</h4>
+          <p>Deterministic statutory eligibility engine guaranteeing transparent student merit evaluation.</p>
+        </div>
+      </div>
+      <div class="top-feature-card">
+        <div class="top-feature-icon">♿</div>
+        <div class="top-feature-content">
+          <h4>High Contrast / Accessibility</h4>
+          <p>Multi-theme support with WCAG high contrast, screen reader compatibility, and Vapi Voice AI.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Scholarships Grid -->
+    <section style="margin-bottom:40px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <div>
+          <h2 style="font-size:24px;color:var(--primary);">Flagship Scheduled Tribe Schemes</h2>
+          <p style="font-size:14px;color:var(--text-muted);">Active scholarships from the Ministry of Tribal Affairs</p>
+        </div>
+        <a href="/scholarships.html" class="btn btn-outline btn-sm">View All &rarr;</a>
+      </div>
+      <div class="scholarship-grid" id="featured-scholarships-container">
+        <div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--text-muted);">Loading schemes...</div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="main-footer">
+    <div class="footer-bottom">
+      &copy; 2026 Ministry of Tribal Affairs, Government of India. TribalScholar AI Full-Stack Platform.
+    </div>
+  </footer>
+
+  <script type="module" src="/client/js/api.js"></script>
+  <script type="module" src="/client/js/auth.js"></script>
+  <script type="module" src="/client/js/chat.js"></script>
+  <script type="module">
+    import { apiRequest, formatINR, formatDate, getDaysRemaining } from '/client/js/api.js';
+    async function loadFeatured() {
+      const container = document.getElementById('featured-scholarships-container');
+      try {
+        const data = await apiRequest('/scholarships?sort_by=deadline', { silent: true });
+        if (data.scholarships && data.scholarships.length > 0) {
+          container.innerHTML = data.scholarships.slice(0, 6).map(s => `
+            <div class="scholarship-card">
+              <div class="scholarship-card-top">
+                <span class="scheme-type-tag">${s.scholarship_type || 'General'}</span>
+                ${s.matchPercentage !== null ? `<span class="match-badge ${s.matchPercentage >= 90 ? 'match-high' : s.matchPercentage >= 65 ? 'match-medium' : 'match-low'}">${s.matchPercentage}% Match</span>` : ''}
+              </div>
+              <h3 class="scholarship-card-title">${s.title}</h3>
+              <div class="scholarship-provider">🏛️ ${s.provider}</div>
+              <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${s.description}</p>
+              <div class="scholarship-details-list">
+                <div><div class="detail-item-label">Amount</div><div class="detail-item-val" style="color:var(--secondary);">${formatINR(s.amount)}/yr</div></div>
+                <div><div class="detail-item-label">Deadline</div><div class="detail-item-val">${formatDate(s.application_deadline)}</div></div>
+              </div>
+              <div class="scholarship-card-actions">
+                <a href="/scholarship-details.html?id=${s.id}" class="btn btn-outline btn-sm" style="flex:1;">Details</a>
+                <a href="/scholarship-details.html?id=${s.id}&action=apply" class="btn btn-primary btn-sm" style="flex:1;">Apply</a>
+              </div>
+            </div>
+          `).join('');
+        }
+      } catch (e) {}
+    }
+    document.addEventListener('DOMContentLoaded', loadFeatured);
+  </script>
+</body>
+</html>

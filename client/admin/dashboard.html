@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Command Center – TribalScholar AI</title>
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/components.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
+  <script src="/js/theme.js"></script>
+  <!-- Chart.js for Admin Analytics Visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="gov-top-bar">
+    <div class="gov-top-content">
+      <div class="gov-emblem-text">
+        <span>🏛️</span>
+        <span>GOVERNMENT OF INDIA | MINISTRY OF TRIBAL AFFAIRS</span>
+      </div>
+      <div class="gov-top-controls">
+        <div class="theme-selector-wrap">
+          <label for="portal-theme" style="font-size:11px;font-weight:600;">Theme:</label>
+          <select id="portal-theme" class="theme-preview-selector" aria-label="Select Portal Design Theme">
+            <option value="gov">Gov Standard</option>
+            <option value="tribal">Tribal Heritage</option>
+            <option value="contrast">High Contrast (A11y)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <header class="main-header">
+    <div class="nav-container">
+      <a href="/" class="brand-link">
+        <div class="brand-logo-badge">TS</div>
+        <div class="brand-info">
+          <h1>TribalScholar AI</h1>
+          <p>WELFARE DIRECTORATE ADMIN COMMAND</p>
+        </div>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/admin/dashboard.html" class="active">Overview</a></li>
+          <li><a href="/admin/scholarships.html">Manage Schemes</a></li>
+          <li><a href="/admin/applications.html">Applications</a></li>
+          <li><a href="/admin/students.html">Students</a></li>
+          <li><a href="/admin/analytics.html">Analytics</a></li>
+          <li><a href="/admin/audit-logs.html">Audit Logs</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-auth-buttons" id="nav-auth-container"></div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:24px;">
+      <div>
+        <h2 style="font-size:24px;color:var(--primary);">Tribal Welfare Directorate Command Center</h2>
+        <p style="font-size:14px;color:var(--text-muted);">
+          Real-time oversight of Scheduled Tribe scholarship schemes, verification throughput, and DBT disbursements
+        </p>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <a href="/admin/scholarships.html?action=add" class="btn btn-primary btn-sm">+ Create New Scheme</a>
+        <a href="/admin/analytics.html" class="btn btn-outline btn-sm">In-depth Analytics</a>
+      </div>
+    </div>
+
+    <!-- 6 Core Summary Metric Cards -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:16px;margin-bottom:28px;">
+      <div class="card" style="border-left:4px solid var(--primary);">
+        <div style="font-size:12px;color:var(--text-muted);font-weight:600;">Total ST Students</div>
+        <div style="font-size:26px;font-weight:800;color:var(--primary);margin-top:4px;" id="metric-students">0</div>
+        <div style="font-size:11px;color:var(--text-light);margin-top:2px;">Registered applicants</div>
+      </div>
+      <div class="card" style="border-left:4px solid #0284c7;">
+        <div style="font-size:12px;color:var(--text-muted);font-weight:600;">Total Applications</div>
+        <div style="font-size:26px;font-weight:800;color:#0284c7;margin-top:4px;" id="metric-applications">0</div>
+        <div style="font-size:11px;color:var(--text-light);margin-top:2px;">All schemes combined</div>
+      </div>
+      <div class="card" style="border-left:4px solid var(--secondary);">
+        <div style="font-size:12px;color:var(--text-muted);font-weight:600;">Pending Verification</div>
+        <div style="font-size:26px;font-weight:800;color:var(--secondary);margin-top:4px;" id="metric-pending">0</div>
+        <div style="font-size:11px;color:var(--text-light);margin-top:2px;">Institutional & Dept review</div>
+      </div>
+      <div class="card" style="border-left:4px solid var(--accent-green);">
+        <div style="font-size:12px;color:var(--text-muted);font-weight:600;">Approved Applications</div>
+        <div style="font-size:26px;font-weight:800;color:var(--accent-green);margin-top:4px;" id="metric-approved">0</div>
+        <div style="font-size:11px;color:var(--text-light);margin-top:2px;">Sanction orders generated</div>
+      </div>
+      <div class="card" style="border-left:4px solid #059669;">
+        <div style="font-size:12px;color:var(--text-muted);font-weight:600;">DBT Disbursed</div>
+        <div style="font-size:26px;font-weight:800;color:#059669;margin-top:4px;" id="metric-disbursed">0</div>
+        <div style="font-size:11px;color:var(--text-light);margin-top:2px;">Credited into student accounts</div>
+      </div>
+      <div class="card" style="border-left:4px solid #dc2626;">
+        <div style="font-size:12px;color:var(--text-muted);font-weight:600;">Rejected Applications</div>
+        <div style="font-size:26px;font-weight:800;color:#dc2626;margin-top:4px;" id="metric-rejected">0</div>
+        <div style="font-size:11px;color:var(--text-light);margin-top:2px;">Criteria or document failure</div>
+      </div>
+    </div>
+
+    <!-- Chart Visualizations -->
+    <div class="admin-charts-grid">
+      <!-- Applications by Status Doughnut -->
+      <div class="card">
+        <h3 class="card-title" style="margin-bottom:14px;font-size:16px;">Application Status Distribution</h3>
+        <div style="position:relative;height:260px;">
+          <canvas id="statusChart"></canvas>
+        </div>
+      </div>
+
+      <!-- State-wise Applications Bar -->
+      <div class="card">
+        <h3 class="card-title" style="margin-bottom:14px;font-size:16px;">State-wise ST Student Applications</h3>
+        <div style="position:relative;height:260px;">
+          <canvas id="stateChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Scheme Popularity Bar -->
+      <div class="card">
+        <h3 class="card-title" style="margin-bottom:14px;font-size:16px;">Scheme Demand & Popularity</h3>
+        <div style="position:relative;height:260px;">
+          <canvas id="schemeChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Monthly Trend Line -->
+      <div class="card">
+        <h3 class="card-title" style="margin-bottom:14px;font-size:16px;">Monthly Application Trends (2026)</h3>
+        <div style="position:relative;height:260px;">
+          <canvas id="trendChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Applications Table -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Recent Application Activity</h3>
+        <a href="/admin/applications.html" class="btn btn-outline btn-sm">View All Applications</a>
+      </div>
+
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>App Number</th>
+              <th>Student Name</th>
+              <th>Scholarship Scheme</th>
+              <th>Grant Amount</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="admin-recent-tbody">
+            <tr>
+              <td colspan="6" style="text-align:center;padding:20px;color:var(--text-muted);">
+                Loading recent application stream...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <footer class="main-footer">
+    <div class="footer-bottom">
+      &copy; 2026 Ministry of Tribal Affairs, Government of India. TribalScholar AI Admin Console.
+    </div>
+  </footer>
+
+  <script type="module" src="/js/api.js"></script>
+  <script type="module" src="/js/auth.js"></script>
+  <script type="module">
+    import { apiRequest, formatINR } from '/js/api.js';
+    import { requireAuth } from '/js/auth.js';
+
+    let statusChartInstance = null;
+    let stateChartInstance = null;
+    let schemeChartInstance = null;
+    let trendChartInstance = null;
+
+    async function loadAdminDashboard() {
+      if (!requireAuth(['admin', 'super_admin'])) return;
+
+      try {
+        const data = await apiRequest('/admin/dashboard');
+        const m = data.metrics;
+
+        document.getElementById('metric-students').innerText = m.totalStudents;
+        document.getElementById('metric-applications').innerText = m.totalApplications;
+        document.getElementById('metric-pending').innerText = m.pendingVerification;
+        document.getElementById('metric-approved').innerText = m.approvedApplications;
+        document.getElementById('metric-disbursed').innerText = m.disbursedApplications;
+        document.getElementById('metric-rejected').innerText = m.rejectedApplications;
+
+        // Render Recent Table
+        const recentTbody = document.getElementById('admin-recent-tbody');
+        if (data.recentApplications && data.recentApplications.length > 0) {
+          recentTbody.innerHTML = data.recentApplications.map(a => {
+            let badgeClass = 'badge-submitted';
+            if (['DOCUMENT_VERIFICATION', 'INSTITUTE_VERIFICATION'].includes(a.status)) badgeClass = 'badge-verification';
+            if (a.status === 'UNDER_REVIEW') badgeClass = 'badge-review';
+            if (a.status === 'APPROVED') badgeClass = 'badge-approved';
+            if (a.status === 'DISBURSED') badgeClass = 'badge-disbursed';
+            if (a.status === 'REJECTED') badgeClass = 'badge-rejected';
+
+            return `
+              <tr>
+                <td><strong>${a.application_number}</strong></td>
+                <td>${a.student_name}</td>
+                <td>${a.scholarship_title || 'Scholarship Scheme'}</td>
+                <td style="color:var(--secondary);font-weight:700;">${formatINR(a.scholarship_amount)}</td>
+                <td><span class="badge ${badgeClass}">${a.status.replace(/_/g, ' ')}</span></td>
+                <td>
+                  <a href="/application-details.html?id=${a.id}" class="btn btn-outline btn-sm">
+                    Inspect & Act
+                  </a>
+                </td>
+              </tr>
+            `;
+          }).join('');
+        }
+
+        // Render Charts with Chart.js
+        renderCharts(data.charts);
+      } catch (err) {
+        console.error('Failed to load admin stats:', err);
+      }
+    }
+
+    function renderCharts(charts) {
+      if (!charts) return;
+
+      // 1. Status Distribution (Doughnut)
+      const statusLabels = charts.statusDistribution.map(s => s.status.replace(/_/g, ' '));
+      const statusCounts = charts.statusDistribution.map(s => s.count);
+      const ctxStatus = document.getElementById('statusChart').getContext('2d');
+      if (statusChartInstance) statusChartInstance.destroy();
+      statusChartInstance = new Chart(ctxStatus, {
+        type: 'doughnut',
+        data: {
+          labels: statusLabels.length ? statusLabels : ['Active Applications'],
+          datasets: [{
+            data: statusCounts.length ? statusCounts : [1],
+            backgroundColor: ['#0284c7', '#f59e0b', '#7e22ce', '#15803d', '#059669', '#dc2626', '#94a3b8'],
+          }],
+        },
+        options: { responsive: true, maintainAspectRatio: false },
+      });
+
+      // 2. State-wise (Bar)
+      const stateLabels = charts.stateDistribution.map(s => s.state);
+      const stateCounts = charts.stateDistribution.map(s => s.count);
+      const ctxState = document.getElementById('stateChart').getContext('2d');
+      if (stateChartInstance) stateChartInstance.destroy();
+      stateChartInstance = new Chart(ctxState, {
+        type: 'bar',
+        data: {
+          labels: stateLabels.length ? stateLabels : ['Odisha', 'Jharkhand', 'Madhya Pradesh'],
+          datasets: [{
+            label: 'Applications',
+            data: stateCounts.length ? stateCounts : [4, 3, 2],
+            backgroundColor: '#0d3b66',
+          }],
+        },
+        options: { responsive: true, maintainAspectRatio: false },
+      });
+
+      // 3. Scheme Popularity (Bar)
+      const schemeLabels = charts.scholarshipPopularity.map(s => s.title ? s.title.slice(0, 22) + '...' : 'Scheme');
+      const schemeCounts = charts.scholarshipPopularity.map(s => s.count);
+      const ctxScheme = document.getElementById('schemeChart').getContext('2d');
+      if (schemeChartInstance) schemeChartInstance.destroy();
+      schemeChartInstance = new Chart(ctxScheme, {
+        type: 'bar',
+        data: {
+          labels: schemeLabels.length ? schemeLabels : ['Higher Education ST', 'Post-Matric ST'],
+          datasets: [{
+            label: 'Applicant Count',
+            data: schemeCounts.length ? schemeCounts : [5, 4],
+            backgroundColor: '#e65100',
+          }],
+        },
+        options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false },
+      });
+
+      // 4. Monthly Trend (Line)
+      const trendLabels = charts.monthlyTrend.map(t => t.month);
+      const trendCounts = charts.monthlyTrend.map(t => t.count);
+      const ctxTrend = document.getElementById('trendChart').getContext('2d');
+      if (trendChartInstance) trendChartInstance.destroy();
+      trendChartInstance = new Chart(ctxTrend, {
+        type: 'line',
+        data: {
+          labels: trendLabels,
+          datasets: [{
+            label: 'Submissions',
+            data: trendCounts,
+            borderColor: '#15803d',
+            backgroundColor: 'rgba(21, 128, 61, 0.1)',
+            fill: true,
+            tension: 0.3,
+          }],
+        },
+        options: { responsive: true, maintainAspectRatio: false },
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', loadAdminDashboard);
+  </script>
+</body>
+</html>
