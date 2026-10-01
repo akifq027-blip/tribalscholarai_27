@@ -106,8 +106,18 @@ function saveSqliteToFile() {
  */
 export async function query(sql, params = []) {
   if (dbType === 'mysql') {
-    const [rows] = await mysqlPool.query(sql, params);
-    return rows;
+    try {
+      const [rows] = await mysqlPool.query(sql, params);
+      return rows;
+    } catch (err) {
+      if (err.code === 'ER_NO_SUCH_TABLE' || (err.message && err.message.toLowerCase().includes("doesn't exist"))) {
+        console.warn(`[Database] Missing table detected during query (${err.message}). Auto-running schema repair...`);
+        await runMigrationsAndSeedIfEmpty(true);
+        const [retryRows] = await mysqlPool.query(sql, params);
+        return retryRows;
+      }
+      throw err;
+    }
   } else if (dbType === 'sqlite') {
     const stmt = sqlJsDb.prepare(sql);
     stmt.bind(params);
@@ -134,11 +144,24 @@ export async function get(sql, params = []) {
  */
 export async function execute(sql, params = []) {
   if (dbType === 'mysql') {
-    const [result] = await mysqlPool.execute(sql, params);
-    return {
-      insertId: result.insertId,
-      affectedRows: result.affectedRows,
-    };
+    try {
+      const [result] = await mysqlPool.execute(sql, params);
+      return {
+        insertId: result.insertId,
+        affectedRows: result.affectedRows,
+      };
+    } catch (err) {
+      if (err.code === 'ER_NO_SUCH_TABLE' || (err.message && err.message.toLowerCase().includes("doesn't exist"))) {
+        console.warn(`[Database] Missing table detected during execute (${err.message}). Auto-running schema repair...`);
+        await runMigrationsAndSeedIfEmpty(true);
+        const [retryResult] = await mysqlPool.execute(sql, params);
+        return {
+          insertId: retryResult.insertId,
+          affectedRows: retryResult.affectedRows,
+        };
+      }
+      throw err;
+    }
   } else if (dbType === 'sqlite') {
     // If multiple statements, run run(), else bind and step
     sqlJsDb.run(sql, params);
@@ -161,19 +184,41 @@ export async function execute(sql, params = []) {
 }
 
 /**
- * Auto-creates tables and seeds data if database is empty
+ * Auto-creates tables and seeds data if database is empty or tables missing
  */
-async function runMigrationsAndSeedIfEmpty() {
+async function runMigrationsAndSeedIfEmpty(force = false) {
   if (dbType === 'mysql') {
-    const [tables] = await mysqlPool.query("SHOW TABLES LIKE 'users'");
-    if (tables.length === 0) {
-      console.log('[Database] Tables not found. Initializing MySQL schema and seed...');
+    let needsMigration = force;
+    if (!needsMigration) {
+      try {
+        const [scholarshipTables] = await mysqlPool.query("SHOW TABLES LIKE 'scholarships'");
+        const [userTables] = await mysqlPool.query("SHOW TABLES LIKE 'users'");
+        if (scholarshipTables.length === 0 || userTables.length === 0) {
+          needsMigration = true;
+        } else {
+          const [countRes] = await mysqlPool.query("SELECT COUNT(*) AS count FROM scholarships");
+          if (countRes && countRes[0] && countRes[0].count === 0) {
+            needsMigration = true;
+          }
+        }
+      } catch (checkErr) {
+        needsMigration = true;
+      }
+    }
+
+    if (needsMigration) {
+      console.log('[Database] Initializing or repairing MySQL schema and seed data...');
+      try {
+        await mysqlPool.query('SET FOREIGN_KEY_CHECKS = 0;');
+      } catch (e) {}
+
       const schemaPath = path.resolve(process.cwd(), 'database/schema.sql');
       const seedPath = path.resolve(process.cwd(), 'database/seed.sql');
 
       if (fs.existsSync(schemaPath)) {
         const schemaSql = fs.readFileSync(schemaPath, 'utf8');
         const statements = schemaSql
+          .replace(/--.*$/gm, '')
           .split(';')
           .map((s) => s.trim())
           .filter((s) => s.length > 0);
@@ -189,6 +234,7 @@ async function runMigrationsAndSeedIfEmpty() {
       if (fs.existsSync(seedPath)) {
         const seedSql = fs.readFileSync(seedPath, 'utf8');
         const statements = seedSql
+          .replace(/--.*$/gm, '')
           .split(';')
           .map((s) => s.trim())
           .filter((s) => s.length > 0);
@@ -200,6 +246,11 @@ async function runMigrationsAndSeedIfEmpty() {
           }
         }
       }
+
+      try {
+        await mysqlPool.query('SET FOREIGN_KEY_CHECKS = 1;');
+      } catch (e) {}
+      console.log('[Database] MySQL schema and seed completed successfully.');
     }
   } else if (dbType === 'sqlite') {
     // Check if users table exists

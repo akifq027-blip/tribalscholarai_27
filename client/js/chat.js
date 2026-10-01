@@ -7,33 +7,83 @@ let currentVapiPublicKey = '';
 let currentVapiAssistantId = '';
 
 /**
- * Loads Vapi SDK dynamically or from module
+ * Loads Vapi SDK dynamically from local bundle, module, or CDN
  */
 async function getVapiSDK() {
   if (window.Vapi) {
     return window.Vapi;
   }
+  if (window.VapiModule?.default || window.VapiModule) {
+    window.Vapi = window.VapiModule.default || window.VapiModule;
+    return window.Vapi;
+  }
+
+  // 1. Try local bundled Vapi SDK script (offline-ready, zero CDN dependency)
+  try {
+    await new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = '/js/vapi-sdk.bundle.js';
+      script.onload = () => {
+        const vClass = window.VapiModule?.default || window.VapiModule || window.Vapi;
+        if (vClass) {
+          window.Vapi = vClass;
+          resolve(vClass);
+        } else {
+          reject(new Error('Vapi class not in local bundle'));
+        }
+      };
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
+    if (window.Vapi) return window.Vapi;
+  } catch (localErr) {
+    console.warn('[Vapi] Local bundle not loaded, trying next source...', localErr.message);
+  }
+
+  // 2. Try module import if supported by environment
   try {
     const mod = await import('@vapi-ai/web');
     const VapiClass = mod.default?.default || mod.default || mod.Vapi;
-    if (VapiClass) return VapiClass;
+    if (VapiClass) {
+      window.Vapi = VapiClass;
+      return VapiClass;
+    }
   } catch (e) {
-    console.warn('[Vapi] Module import error, loading script from CDN...', e.message);
+    // Ignore and proceed to CDN fallbacks
   }
 
-  // Fallback to CDN script if direct module resolution fails
-  return new Promise((resolve, reject) => {
-    if (window.Vapi) return resolve(window.Vapi);
-    const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/@vapi-ai/web@2.1.2/dist/vapi.min.js';
-    script.onload = () => {
-      resolve(window.Vapi);
-    };
-    script.onerror = () => {
-      reject(new Error('Failed to load Vapi Web SDK script'));
-    };
-    document.head.appendChild(script);
-  });
+  // 3. Fallback to valid CDN URLs
+  const cdnUrls = [
+    'https://unpkg.com/@vapi-ai/web/dist/vapi.js',
+    'https://cdn.jsdelivr.net/npm/@vapi-ai/web/dist/vapi.js'
+  ];
+
+  for (const url of cdnUrls) {
+    try {
+      const cls = await new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = url;
+        script.onload = () => {
+          const v = window.Vapi || window.VapiModule?.default || window.VapiModule;
+          if (v) resolve(v);
+          else reject(new Error('Vapi not attached to window'));
+        };
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+      if (cls) {
+        window.Vapi = cls;
+        return cls;
+      }
+    } catch (e) {
+      // try next CDN
+    }
+  }
+
+  if (!window.Vapi) {
+    throw new Error('Vapi Voice SDK could not be loaded. Please check network connectivity or your Vapi configuration.');
+  }
+  return window.Vapi;
 }
 
 export async function fetchVapiConfig() {

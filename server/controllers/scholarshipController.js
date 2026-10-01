@@ -15,7 +15,7 @@ export async function getAllScholarships(req, res, next) {
       sort_by = 'deadline',
     } = req.query;
 
-    let sql = 'SELECT * FROM scholarships WHERE status = "active"';
+    let sql = "SELECT * FROM scholarships WHERE status = 'active'";
     const params = [];
 
     if (search) {
@@ -25,7 +25,7 @@ export async function getAllScholarships(req, res, next) {
     }
 
     if (education_level && education_level !== 'all') {
-      sql += ' AND (education_level LIKE ? OR education_level = "Any")';
+      sql += " AND (education_level LIKE ? OR education_level = 'Any')";
       params.push(`%${education_level.trim()}%`);
     }
 
@@ -43,7 +43,7 @@ export async function getAllScholarships(req, res, next) {
     }
 
     if (state && state !== 'all') {
-      sql += ' AND (eligible_states LIKE ? OR eligible_states LIKE "%All%")';
+      sql += " AND (eligible_states LIKE ? OR eligible_states LIKE '%All%')";
       params.push(`%${state.trim()}%`);
     }
 
@@ -324,7 +324,7 @@ export async function updateScholarship(req, res, next) {
 export async function deleteScholarship(req, res, next) {
   try {
     const { id } = req.params;
-    await db.execute('UPDATE scholarships SET status = "inactive" WHERE id = ?', [id]);
+    await db.execute("UPDATE scholarships SET status = 'inactive' WHERE id = ?", [id]);
     await logAuditAction(req.user.id, 'DEACTIVATE_SCHOLARSHIP', 'scholarships', id, req);
 
     res.json({

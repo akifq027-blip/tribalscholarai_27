@@ -75,7 +75,7 @@ CREATE TABLE scholarships (
   course VARCHAR(200) DEFAULT 'All Courses',
   minimum_percentage DECIMAL(5, 2) DEFAULT 0.00,
   maximum_income DECIMAL(12, 2) DEFAULT 250000.00,
-  eligible_states TEXT DEFAULT 'All States',
+  eligible_states VARCHAR(500) DEFAULT 'All States',
   eligible_categories VARCHAR(255) DEFAULT 'Scheduled Tribe (ST)',
   required_documents TEXT DEFAULT NULL,
   official_url VARCHAR(500) DEFAULT NULL,

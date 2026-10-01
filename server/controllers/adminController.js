@@ -4,14 +4,14 @@ import { logAuditAction } from '../middleware/auditMiddleware.js';
 export async function getDashboardStats(req, res, next) {
   try {
     // 1. Core summary counters
-    const studentsCountRow = await db.get('SELECT COUNT(*) as count FROM users WHERE role = "student"');
+    const studentsCountRow = await db.get("SELECT COUNT(*) as count FROM users WHERE role = 'student'");
     const appsCountRow = await db.get('SELECT COUNT(*) as count FROM applications');
     const pendingCountRow = await db.get(
-      'SELECT COUNT(*) as count FROM applications WHERE status IN ("SUBMITTED", "DOCUMENT_VERIFICATION", "INSTITUTE_VERIFICATION", "UNDER_REVIEW")'
+      "SELECT COUNT(*) as count FROM applications WHERE status IN ('SUBMITTED', 'DOCUMENT_VERIFICATION', 'INSTITUTE_VERIFICATION', 'UNDER_REVIEW')"
     );
-    const approvedCountRow = await db.get('SELECT COUNT(*) as count FROM applications WHERE status = "APPROVED"');
-    const rejectedCountRow = await db.get('SELECT COUNT(*) as count FROM applications WHERE status = "REJECTED"');
-    const disbursedCountRow = await db.get('SELECT COUNT(*) as count FROM applications WHERE status = "DISBURSED"');
+    const approvedCountRow = await db.get("SELECT COUNT(*) as count FROM applications WHERE status = 'APPROVED'");
+    const rejectedCountRow = await db.get("SELECT COUNT(*) as count FROM applications WHERE status = 'REJECTED'");
+    const disbursedCountRow = await db.get("SELECT COUNT(*) as count FROM applications WHERE status = 'DISBURSED'");
 
     const totalStudents = studentsCountRow ? Number(studentsCountRow.count) : 0;
     const totalApplications = appsCountRow ? Number(appsCountRow.count) : 0;
