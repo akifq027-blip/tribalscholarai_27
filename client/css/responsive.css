@@ -312,34 +312,31 @@ h1, h2, h3, h4, h5, h6,
 /* ========================================================
    5. BREAKPOINT: DESKTOP & LARGE TABLETS (<= 1024px)
    ======================================================== */
-@media (max-width: 1024px) {
-  .footer-content {
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-  }
-
+@media (max-width: 1300px) {
   .nav-links {
-    gap: 10px;
+    gap: 8px;
   }
 
   .nav-links a {
-    font-size: 13px;
-    padding: 5px 8px;
+    font-size: 12.5px;
+    padding: 5px 6px;
   }
 
-  .admin-charts-grid,
-  .dashboard-top-grid,
-  .two-col-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
+  .nav-user-btn {
+    max-width: 160px;
+  }
+
+  .brand-info p {
+    display: none;
   }
 }
 
 /* ========================================================
-   6. BREAKPOINT: TABLETS & MOBILE COLLAPSE (<= 992px)
-   Header switches to: Logo | Voice AI | Bell | Hamburger Menu
+   6. BREAKPOINT: TABLETS & MOBILE COLLAPSE (<= 1180px)
+   Header switches cleanly to: Logo | Voice AI | Bell | Hamburger Menu
+   Eliminates all horizontal overlap between nav links and auth action buttons
    ======================================================== */
-@media (max-width: 992px) {
+@media (max-width: 1180px) {
   /* Strictly hide desktop navigation menu */
   .main-header nav,
   header nav,
